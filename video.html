@@ -171,13 +171,23 @@ const category=window.TUBE_CATEGORIES.find(c=>c.slug===cat);
 const backUrl=`videos.html?cat=${encodeURIComponent(cat)}&sub=${encodeURIComponent(sub)}`;
 document.getElementById('backBtn').onclick=()=>location.href=backUrl;
 
-const titles=[
+let titles=[
   `De basis van ${sub}`,
   `${sub}: de belangrijkste principes`,
   `Praktische toepassingen van ${sub}`,
   `Veelgemaakte denkfouten binnen ${sub}`,
   `Verdieping: ${sub}`
 ];
+
+if(cat==='talen' && sub==='Nederlands'){
+  titles=[
+    'Werkwoordspelling: zo vind je de stam',
+    'Tegenwoordige tijd: ik, jij en hij/zij',
+    'Tegenwoordige tijd: jij/je achter de persoonsvorm',
+    'Verleden tijd: ’t kofschip / ’t ex-kofschip',
+    'Verleden tijd: sterke en onregelmatige werkwoorden'
+  ];
+}
 const title=titles[Math.max(0,Math.min(4,videoNumber-1))];
 document.title=`Tube — ${title}`;
 document.getElementById('videoTitle').textContent=title;
@@ -200,6 +210,79 @@ const transcriptData={
     ['09:07','At the end we summarize the main points so you can quickly check what you learned from the video.']
   ]
 };
+
+const dutchGrammarTranscripts={
+  1:{
+    nl:[
+      ['00:00','Bij werkwoordspelling begin je met de stam. Neem het hele werkwoord, bijvoorbeeld werken. Haal -en eraf: werk. Dat is de stam.'],
+      ['01:05','Bij werkwoorden waarvan de stam op een dubbele medeklinker of klinker zou eindigen, pas je de gewone Nederlandse spellingregels toe. Lopen wordt loop, maken wordt maak en reizen wordt reis.'],
+      ['03:10','Als je de stam goed kunt vinden, worden de regels voor de tegenwoordige en verleden tijd veel eenvoudiger.'],
+      ['05:20','Voorbeeld: antwoorden. Haal -en eraf: antwoord. Vanuit die stam kun je vormen maken zoals ik antwoord en hij antwoordt.']
+    ],
+    en:[
+      ['00:00','Dutch verb spelling starts with the stem. Take the infinitive, for example werken, and remove -en: werk.'],
+      ['01:05','Then apply normal Dutch spelling rules. Lopen becomes loop, maken becomes maak and reizen becomes reis.'],
+      ['03:10','Once you can identify the stem, present and past tense spelling becomes much easier.']
+    ]
+  },
+  2:{
+    nl:[
+      ['00:00','In de tegenwoordige tijd schrijf je bij ik alleen de stam: ik werk, ik loop, ik antwoord.'],
+      ['01:15','Bij jij, je, hij, zij en het staat meestal stam + t: jij werkt, hij loopt, zij antwoordt.'],
+      ['03:25','Een belangrijke controle is het onderwerp vervangen door lopen: als je “hij loopt” zou zeggen, hoort er bij een ander werkwoord meestal ook een -t achter de stam.'],
+      ['05:40','Let op bij werkwoorden waarvan de stam al op een t eindigt. Bij rusten is de stam rust. Je schrijft hij rust, niet hij rustt.']
+    ],
+    en:[
+      ['00:00','In the Dutch present tense, ik uses only the stem: ik werk.'],
+      ['01:15','Jij, hij, zij and het usually use stem + t: jij werkt, hij loopt.'],
+      ['05:40','If the stem already ends in t, you do not add a second t.']
+    ]
+  },
+  3:{
+    nl:[
+      ['00:00','Bij jij of je is de woordvolgorde belangrijk. Staat jij vóór de persoonsvorm, dan schrijf je meestal stam + t: jij werkt.'],
+      ['01:35','Staat jij achter de persoonsvorm, dan vervalt de extra t: werk jij, loop jij, antwoord jij.'],
+      ['03:10','Vergelijk: jij vindt het leuk, maar vind jij het leuk? Dit is een van de handigste regels om dt-fouten te voorkomen.'],
+      ['05:00','Deze uitzondering geldt alleen wanneer jij of je zelf het onderwerp is.']
+    ],
+    en:[
+      ['00:00','With jij or je, word order matters. Before the verb: jij werkt.'],
+      ['01:35','After the verb, the extra t disappears: werk jij?'],
+      ['03:10','Compare jij vindt with vind jij.']
+    ]
+  },
+  4:{
+    nl:[
+      ['00:00','Voor zwakke werkwoorden gebruik je in de verleden tijd de regel van ’t ex-kofschip om te kiezen tussen -te en -de.'],
+      ['01:20','Kijk naar de laatste medeklinker van de stam. Zit die in de klanken van ’t ex-kofschip, dan gebruik je -te: werken wordt werkte.'],
+      ['03:25','Zit de laatste klank er niet in, dan gebruik je -de: leven wordt leefde en antwoorden wordt antwoordde.'],
+      ['06:05','In het meervoud voeg je -n toe: wij werkten, wij leefden.']
+    ],
+    en:[
+      ['00:00','For weak Dutch verbs in the past tense, ’t ex-kofschip helps you choose -te or -de.'],
+      ['01:20','If the final stem sound belongs to the rule, use -te: werken becomes werkte.'],
+      ['03:25','Otherwise use -de: leven becomes leefde.']
+    ]
+  },
+  5:{
+    nl:[
+      ['00:00','Sterke werkwoorden maken de verleden tijd niet met -te of -de, maar veranderen vaak van klinker. Lopen wordt liep en schrijven wordt schreef.'],
+      ['01:40','Deze vormen moet je voor een groot deel leren herkennen en onthouden.'],
+      ['03:00','Sommige veelgebruikte werkwoorden zijn onregelmatig: zijn wordt was of waren, hebben wordt had of hadden en gaan wordt ging of gingen.'],
+      ['05:25','Bij twijfel helpt een woordenboek of spellingcontrole, maar probeer veelvoorkomende sterke werkwoorden actief te oefenen.']
+    ],
+    en:[
+      ['00:00','Strong Dutch verbs often change their vowel in the past tense: lopen becomes liep.'],
+      ['01:40','These forms largely need to be learned and recognized.'],
+      ['03:00','Common irregular verbs include zijn → was/waren and hebben → had/hadden.']
+    ]
+  }
+};
+
+if(cat==='talen' && sub==='Nederlands' && dutchGrammarTranscripts[videoNumber]){
+  transcriptData.nl=dutchGrammarTranscripts[videoNumber].nl;
+  transcriptData.en=dutchGrammarTranscripts[videoNumber].en;
+}
 
 const transcript=document.getElementById('transcript');
 const languageSelect=document.getElementById('languageSelect');
