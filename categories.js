@@ -109,5 +109,14 @@ window.TUBE_CATEGORIES = [
       { name: "Muziek", description: "Ontwikkel muzikaal inzicht en creatieve techniek." },
       { name: "Creatief denken", description: "Genereer betere ideeën en doorbreek vaste denkpatronen." }
     ]
+  },
+  {
+    slug: "talen",
+    name: "Talen",
+    description: "Leer talen stap voor stap en doelgericht.",
+    subcategories: [
+      { name: "Nederlands", description: "Leer Nederlandse grammatica, spelling en taalgebruik." },
+      { name: "Engels", description: "Leer Engelse grammatica, woordenschat en taalgebruik." }
+    ]
   }
 ];
