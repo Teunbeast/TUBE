@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tube — leerpad</title>
+<style>
+:root{--ink:#18384a;--muted:#708995;--line:#e3ebee;--soft:#f8fbfb;--accent:#4f8993}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:Manrope,"Avenir Next","Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}header{height:82px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(22px,5vw,72px);border-bottom:1px solid #f0f3f4}
+.brand{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:650;letter-spacing:-.03em;cursor:pointer}.brandmark{width:26px;height:26px;border-radius:9px 3px 9px 3px;background:linear-gradient(135deg,#92c2c8,#5f99a4)}
+.back{border:1px solid #d8e4e8;background:#fff;border-radius:24px;padding:10px 15px;cursor:pointer}
+main{max-width:980px;margin:0 auto;padding:58px 24px 90px}.crumb{font-size:12px;color:#7b96a2;margin-bottom:20px}
+.eyebrow{font-size:12px;font-weight:650;letter-spacing:.12em;text-transform:uppercase;color:#7795a3;margin-bottom:15px}
+h1{font-size:clamp(36px,4.8vw,54px);line-height:1.06;letter-spacing:-.04em;font-weight:520;margin:0 0 14px}.intro{font-size:15px;line-height:1.6;color:var(--muted);margin-bottom:40px;max-width:760px}
+.phase-list{display:flex;flex-direction:column;gap:18px}.phase{border:1px solid var(--line);border-radius:22px;background:#fff;overflow:hidden;box-shadow:0 16px 36px rgba(24,56,74,.045)}
+.phase-head{padding:22px 24px 18px;border-bottom:1px solid #edf2f4}.phase-name{font-size:18px;font-weight:690;margin-bottom:7px}.phase-desc{font-size:13px;color:var(--muted);line-height:1.5}
+.topics{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #edf2f4}.topic{padding:13px 20px;border-bottom:1px solid #f0f3f4;font-size:13px;line-height:1.45;color:#4c6977;position:relative;padding-left:36px}.topic:before{content:"";position:absolute;left:20px;top:20px;width:6px;height:6px;border-radius:50%;background:#83aab2}
+.phase-action{display:flex;justify-content:flex-end;padding:13px 18px}.lessons{border:1px solid #d4e1e5;background:#fff;border-radius:20px;padding:9px 14px;font-size:12.5px;font-weight:650;cursor:pointer}.lessons:hover{background:var(--soft)}
+.note{margin-top:26px;padding:17px 19px;background:#f8fbfb;border-radius:16px;font-size:12.5px;line-height:1.55;color:#708995}
+@media(max-width:700px){.topics{grid-template-columns:1fr}.topic{border-right:0}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand" onclick="location.href='index.html'"><div class="brandmark"></div><span>Tube</span></div>
+<button class="back" id="backBtn">← Terug</button>
+</header>
+<main>
+<div class="crumb" id="crumb"></div>
+<div class="eyebrow">Leerpad</div>
+<h1 id="title"></h1>
+<div class="intro" id="intro"></div>
+<div class="phase-list" id="phaseList"></div>
+<div class="note">Dit leerpad is een brede HAVO 1-opbouw. De precieze volgorde en accenten verschillen per school en lesmethode.</div>
+</main>
+<script src="categories.js"></script>
+<script>
+const params=new URLSearchParams(location.search);
+const catSlug=params.get('cat');
+const subName=params.get('sub');
+const levelName=params.get('level');
+const cat=window.TUBE_CATEGORIES.find(c=>c.slug===catSlug);
+const sub=cat?.subcategories?.find(s=>s.name===subName);
+const level=sub?.levels?.find(l=>l.name===levelName);
+
+document.getElementById('backBtn').onclick=()=>location.href=`levels.html?cat=${encodeURIComponent(catSlug)}&sub=${encodeURIComponent(subName)}`;
+document.getElementById('crumb').textContent=`${cat?.name || ''} / ${sub?.name || ''} / ${level?.name || ''}`;
+document.getElementById('title').textContent=`${sub?.name || ''} — ${level?.name || ''}`;
+document.getElementById('intro').textContent=level?.description || '';
+document.title=`Tube — ${sub?.name || ''} ${level?.name || ''}`;
+
+const phaseList=document.getElementById('phaseList');
+phaseList.innerHTML=(level?.phases || []).map((phase,i)=>`
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-name">${phase.name}</div>
+      <div class="phase-desc">${phase.description}</div>
+    </div>
+    <div class="topics">
+      ${phase.topics.map(topic=>`<div class="topic">${topic}</div>`).join('')}
+    </div>
+    <div class="phase-action">
+      <button class="lessons" onclick="openLessons(${i})">Bekijk voorbeeldlessen →</button>
+    </div>
+  </section>
+`).join('');
+
+function openLessons(index){
+  const phase=level.phases[index];
+  const label=`${subName} · ${levelName} · ${phase.name}`;
+  location.href=`videos.html?cat=${encodeURIComponent(catSlug)}&sub=${encodeURIComponent(label)}`;
+}
+</script>
+</body>
+</html>
