@@ -87,13 +87,23 @@ document.getElementById('categoryCrumb').textContent=category ? category.name : 
 document.getElementById('subCrumb').textContent=sub;
 document.getElementById('backBtn').onclick=()=>location.href=`category.html?cat=${encodeURIComponent(catSlug)}`;
 
-const examples=[
+let examples=[
   {title:`De basis van ${sub}`,desc:`Een heldere introductie tot de belangrijkste ideeën binnen ${sub}.`,duration:'12:48',level:'Beginner'},
   {title:`${sub}: de belangrijkste principes`,desc:`Een overzichtelijke uitleg van concepten die je nodig hebt om het onderwerp goed te begrijpen.`,duration:'18:21',level:'Beginner'},
   {title:`Praktische toepassingen van ${sub}`,desc:`Van theorie naar praktijk met concrete voorbeelden en situaties.`,duration:'15:36',level:'Gemiddeld'},
   {title:`Veelgemaakte denkfouten binnen ${sub}`,desc:`Leer waar mensen vaak de mist in gaan en hoe je kritischer naar het onderwerp kijkt.`,duration:'20:04',level:'Gemiddeld'},
   {title:`Verdieping: ${sub}`,desc:`Een langere verdiepende video voor wanneer je de basis al beheerst.`,duration:'27:19',level:'Verdieping'}
 ];
+
+if(catSlug==='talen' && sub==='Nederlands'){
+  examples=[
+    {title:'Werkwoordspelling: zo vind je de stam',desc:'Leer de basisregel waarmee je Nederlandse werkwoorden correct vervoegt.',duration:'08:40',level:'Beginner'},
+    {title:'Tegenwoordige tijd: ik, jij en hij/zij',desc:'Leer wanneer je alleen de stam schrijft en wanneer er een -t achter komt.',duration:'11:25',level:'Beginner'},
+    {title:'Tegenwoordige tijd: jij/je achter de persoonsvorm',desc:'Begrijp de uitzondering bij zinnen zoals “Loop jij?” en voorkom dt-fouten.',duration:'09:55',level:'Beginner'},
+    {title:'Verleden tijd: ’t kofschip / ’t ex-kofschip',desc:'Leer wanneer een zwak werkwoord in de verleden tijd -te of -de krijgt.',duration:'13:10',level:'Beginner'},
+    {title:'Verleden tijd: sterke en onregelmatige werkwoorden',desc:'Leer hoe werkwoorden zoals lopen, zijn en hebben in de verleden tijd veranderen.',duration:'14:35',level:'Gemiddeld'}
+  ];
+}
 
 const list=document.getElementById('videoList');
 list.innerHTML=examples.map((v,i)=>`
