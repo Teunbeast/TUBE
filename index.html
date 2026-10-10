@@ -94,8 +94,7 @@ input.addEventListener('input',()=>{
 
   const matches=window.TUBE_CATEGORIES.filter(cat=>{
     const customSubs=getCustomSubcategories(cat);
-    const allSubs=[...(cat.subcategories || []),...customSubs];
-    const hay=norm(`${cat.name} ${cat.description} ${allSubs.map(s=>s.name+' '+s.description).join(' ')}`);
+    const hay=norm(JSON.stringify({category:cat,customSubcategories:customSubs}));
     return q.split(/\s+/).some(t=>t.length>1 && hay.includes(t));
   }).slice(0,3);
 
