@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tube — homepage</title>
+<style>
+:root{--bg:#fff;--ink:#18384a;--muted:#6f8794;--line:#dfe8ec;--accent:#4f8993;--shadow:0 16px 44px rgba(24,56,74,.08)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#fff;color:var(--ink);font-family:Manrope,"Avenir Next","Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit}.shell{min-height:100vh}header{height:84px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(24px,5vw,76px)}
+.brand{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:650;letter-spacing:-.03em}.brandmark{width:26px;height:26px;border-radius:9px 3px 9px 3px;background:linear-gradient(135deg,#92c2c8,#5f99a4);position:relative;overflow:hidden}.brandmark:after{content:"";position:absolute;width:34px;height:1px;left:-4px;top:12px;background:rgba(255,255,255,.8);transform:rotate(-42deg)}
+.login{border:0;background:transparent;font-size:14px;font-weight:560;padding:10px 0;cursor:pointer}
+.hero{min-height:430px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 20px 72px}
+h1{margin:0 0 34px;font-size:clamp(42px,4.15vw,62px);line-height:1.08;letter-spacing:-.045em;font-weight:520;text-align:center}h1 .accent{color:var(--accent)}
+.search-stack{width:min(760px,90vw);position:relative}.search{width:100%;display:flex;align-items:center;gap:14px;min-height:68px;padding:8px 9px 8px 24px;background:#fff;border:1px solid #e6edef;border-radius:36px;box-shadow:var(--shadow)}
+.search svg{width:21px;height:21px;flex:0 0 auto;color:#7292a1}.search input{min-width:0;flex:1;border:0;outline:0;background:transparent;color:var(--ink);font-size:16px}.search input::placeholder{color:#94a9b4}.search button{height:50px;min-width:92px;padding:0 20px;border:0;border-radius:27px;background:var(--ink);color:#fff;font-size:14px;font-weight:620;cursor:pointer}
+.suggestions{width:100%;margin-top:12px;border:1px solid #e4ebee;border-radius:20px;background:#fff;box-shadow:0 18px 42px rgba(24,56,74,.08);overflow:hidden;display:none}.suggestions.visible{display:block}.suggestion-label{padding:12px 18px 8px;font-size:11px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:#8aa0ab}
+.suggestion{width:100%;min-height:58px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:18px;padding:12px 18px;border:0;border-top:1px solid #eef3f4;background:#fff;text-align:left;cursor:pointer}.suggestion:hover{background:#f8fbfb}.suggestion-name{display:block;font-size:14px;font-weight:640;margin-bottom:3px}.suggestion-reason{font-size:12px;color:var(--muted)}
+.category-area{padding:4px 20px 64px}.category-toggle{margin:0 auto;display:flex;align-items:center;gap:11px;min-height:48px;padding:0 18px;border:1px solid #d6e1e5;border-radius:25px;background:#fff;font-size:14px;font-weight:560;cursor:pointer}.chevron{transition:transform .3s ease}.category-area.open .chevron{transform:rotate(180deg)}
+.reveal{max-width:760px;margin:0 auto;display:grid;grid-template-rows:0fr;transition:grid-template-rows .55s cubic-bezier(.16,.86,.3,1),margin-top .55s cubic-bezier(.16,.86,.3,1)}.category-area.open .reveal{grid-template-rows:1fr;margin-top:28px}.clip{overflow:hidden}.panel{border:1px solid #e4ebee;border-radius:22px;background:#fff;box-shadow:0 22px 50px rgba(24,56,74,.07);padding:10px 18px 14px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;min-height:58px;padding:0 4px 0 6px;border-bottom:1px solid #edf2f4}.panel-title{font-size:15px;font-weight:650}.close{width:36px;height:36px;border:0;border-radius:50%;background:transparent;font-size:22px;cursor:pointer}
+.list{display:flex;flex-direction:column}.item{width:100%;min-height:76px;display:grid;grid-template-columns:42px 1fr 24px;align-items:center;gap:15px;border:0;border-bottom:1px solid #edf2f4;background:#fff;text-align:left;padding:12px 6px;cursor:pointer}.item:last-child{border-bottom:0}.item:hover{background:#fafcfc}.iconwrap{width:38px;height:38px;border:1px solid #d9e5e9;border-radius:50%;display:grid;place-items:center;color:#517887;background:#fcfdfd}.copy{min-width:0;display:flex;align-items:baseline;flex-wrap:wrap;gap:0 6px}.name{font-size:14px;font-weight:640;white-space:nowrap}.name:after{content:" -"}.desc{font-size:12.5px;line-height:1.35;color:var(--muted)}.arrow{font-size:21px;color:#7c99a6}
+@media(max-width:640px){header{height:72px}.brand{font-size:21px}.hero{min-height:390px;padding:52px 18px 58px}h1{font-size:39px}.search-stack{width:min(94vw,760px)}.search{padding-left:20px;min-height:64px}.search input{font-size:14px}.search button{min-width:74px;height:46px;padding:0 15px;font-size:13px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header>
+  <div class="brand"><div class="brandmark"></div><span>Tube</span></div>
+  <button class="login">Inloggen</button>
+</header>
+<main>
+<section class="hero">
+  <h1>Wat wil je <span class="accent">vandaag</span> leren?</h1>
+  <div class="search-stack">
+    <form class="search" id="searchForm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m16.2 16.2 4.1 4.1"/></svg>
+      <input id="searchInput" placeholder="Zoek een onderwerp of vaardigheid" autocomplete="off">
+      <button type="submit">Zoeken</button>
+    </form>
+    <div class="suggestions" id="suggestions"></div>
+  </div>
+</section>
+
+<section class="category-area" id="categoryArea">
+  <button class="category-toggle" id="categoryToggle" type="button">
+    <span>▦</span><span>Categorieën</span><span class="chevron">⌄</span>
+  </button>
+  <div class="reveal"><div class="clip"><div class="panel">
+    <div class="panel-head"><div class="panel-title">Alle categorieën</div><button class="close" id="closeCategories">×</button></div>
+    <div class="list" id="categoryList"></div>
+  </div></div></div>
+</section>
+</main>
+</div>
+
+<script src="categories.js"></script>
+<script>
+const area=document.getElementById('categoryArea');
+const toggle=document.getElementById('categoryToggle');
+const closeBtn=document.getElementById('closeCategories');
+const list=document.getElementById('categoryList');
+const input=document.getElementById('searchInput');
+const suggestions=document.getElementById('suggestions');
+
+function categoryUrl(slug){return `category.html?cat=${encodeURIComponent(slug)}`}
+
+function renderCategories(){
+  list.innerHTML=window.TUBE_CATEGORIES.map((cat,i)=>`
+    <button class="item" type="button" onclick="location.href='${categoryUrl(cat.slug)}'">
+      <span class="iconwrap">${i+1}</span>
+      <span class="copy"><span class="name">${cat.name}</span><span class="desc">${cat.description}</span></span>
+      <span class="arrow">→</span>
+    </button>`).join('');
+}
+renderCategories();
+
+toggle.addEventListener('click',()=>area.classList.toggle('open'));
+closeBtn.addEventListener('click',()=>area.classList.remove('open'));
+
+function norm(v){return v.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+input.addEventListener('input',()=>{
+  const q=norm(input.value.trim());
+  if(q.length<2){suggestions.classList.remove('visible');suggestions.innerHTML='';return}
+  const matches=window.TUBE_CATEGORIES.filter(cat=>{
+    const hay=norm(`${cat.name} ${cat.description} ${cat.subcategories.map(s=>s.name+' '+s.description).join(' ')}`);
+    return q.split(/\s+/).some(t=>t.length>1 && hay.includes(t));
+  }).slice(0,3);
+  if(!matches.length){suggestions.classList.remove('visible');suggestions.innerHTML='';return}
+  suggestions.innerHTML=`<div class="suggestion-label">Relevante categorieën</div>`+matches.map(cat=>`
+    <button class="suggestion" onclick="location.href='${categoryUrl(cat.slug)}'">
+      <span><span class="suggestion-name">${cat.name}</span><span class="suggestion-reason">${cat.description}</span></span><span>→</span>
+    </button>`).join('');
+  suggestions.classList.add('visible');
+});
+document.getElementById('searchForm').addEventListener('submit',e=>e.preventDefault());
+document.addEventListener('click',e=>{if(!e.target.closest('.search-stack'))suggestions.classList.remove('visible')});
+</script>
+</body>
+</html>

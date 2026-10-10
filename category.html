@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tube — categorie</title>
+<style>
+:root{--ink:#18384a;--muted:#708995;--accent:#4f8993;--line:#e4ebee;--soft:#f8fbfb}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:Manrope,"Avenir Next","Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+header{height:84px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(24px,5vw,76px);border-bottom:1px solid #f0f3f4}.brand{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:650;letter-spacing:-.03em;cursor:pointer}.brandmark{width:26px;height:26px;border-radius:9px 3px 9px 3px;background:linear-gradient(135deg,#92c2c8,#5f99a4)}.back{border:1px solid #dbe5e9;background:#fff;border-radius:24px;padding:10px 16px;cursor:pointer;color:var(--ink)}
+main{max-width:900px;margin:0 auto;padding:70px 24px 90px}.eyebrow{font-size:12px;font-weight:650;letter-spacing:.12em;text-transform:uppercase;color:#7795a3;margin-bottom:18px}.title{font-size:clamp(38px,5vw,58px);line-height:1.06;letter-spacing:-.045em;font-weight:520;margin:0 0 16px}.intro{font-size:16px;line-height:1.6;color:var(--muted);max-width:680px;margin-bottom:48px}
+.section-title{font-size:16px;font-weight:650;margin-bottom:14px}.sublist{border:1px solid var(--line);border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 20px 46px rgba(24,56,74,.06)}
+.sub{display:grid;grid-template-columns:1fr 26px;align-items:center;gap:20px;min-height:94px;padding:20px 24px;border-bottom:1px solid #edf2f4;cursor:pointer;transition:background .18s ease}.sub:last-child{border-bottom:0}.sub:hover{background:var(--soft)}.subname{font-size:15px;font-weight:650;margin-bottom:6px}.subdesc{font-size:13px;line-height:1.45;color:var(--muted)}.arrow{font-size:22px;color:#7594a2}
+.empty{padding:28px;border:1px dashed #cddce2;border-radius:18px;color:var(--muted)}
+.note{margin-top:26px;padding:18px 20px;border-radius:16px;background:#f8fbfb;color:#66818e;font-size:13px;line-height:1.55}.note code{background:#eef4f5;padding:2px 5px;border-radius:5px}
+
+.section-row{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:14px}
+.section-row .section-title{margin:0}
+.add-sub{
+  border:1px solid #cfdde2;
+  background:#fff;
+  color:var(--ink);
+  border-radius:22px;
+  padding:9px 14px;
+  font-size:13px;
+  font-weight:650;
+  cursor:pointer;
+  transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+.add-sub:hover{background:#f8fbfb;border-color:#b9cfd6;transform:translateY(-1px)}
+
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(18,45,58,.24);
+  display:none;align-items:center;justify-content:center;padding:20px;z-index:50
+}
+.modal-backdrop.open{display:flex}
+.modal{
+  width:min(520px,94vw);background:#fff;border:1px solid #e2e9ec;border-radius:22px;
+  box-shadow:0 28px 80px rgba(24,56,74,.18);padding:24px
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.modal-title{font-size:18px;font-weight:700}
+.modal-close{border:0;background:transparent;font-size:26px;cursor:pointer;color:#66818e}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.field label{font-size:12px;font-weight:650;color:#67818d}
+.field input,.field textarea{
+  width:100%;border:1px solid #d9e4e8;border-radius:14px;padding:12px 13px;
+  outline:none;color:var(--ink);font:inherit;background:#fff
+}
+.field textarea{min-height:96px;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:#9dbbc4;box-shadow:0 0 0 3px rgba(79,137,147,.08)}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.btn-secondary,.btn-primary{border-radius:22px;padding:10px 15px;font:inherit;font-size:13px;font-weight:650;cursor:pointer}
+.btn-secondary{border:1px solid #d6e2e6;background:#fff;color:var(--ink)}
+.btn-primary{border:1px solid var(--ink);background:var(--ink);color:#fff}
+.user-badge{
+  display:inline-block;margin-left:8px;padding:2px 7px;border-radius:10px;
+  background:#edf6f6;color:#4f8993;font-size:10px;font-weight:700;vertical-align:1px
+}
+.helper{
+  margin-top:10px;font-size:11.5px;line-height:1.45;color:#8299a4
+}
+
+@media(max-width:640px){.section-row{align-items:flex-start;flex-direction:column}.add-sub{width:100%}header{height:72px}.brand{font-size:21px}main{padding-top:48px}.sub{min-height:88px;padding:18px 18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand" onclick="location.href='index.html'"><div class="brandmark"></div><span>Tube</span></div>
+  <button class="back" onclick="location.href='index.html'">← Home</button>
+</header>
+<main>
+  <div class="eyebrow">Categorie</div>
+  <h1 class="title" id="title">Categorie</h1>
+  <div class="intro" id="intro"></div>
+
+  <div class="section-row">
+    <div class="section-title">Kies een subcategorie</div>
+    <button class="add-sub" id="addSubBtn" type="button" aria-label="Subcategorie toevoegen">+ Subcategorie toevoegen</button>
+  </div>
+  <div class="sublist" id="sublist"></div>
+
+  <div class="note">
+    Zelf een subcategorie toevoegen? Open <code>categories.js</code>, zoek deze categorie en voeg binnen
+    <code>subcategories</code> een nieuwe regel toe. Na opslaan en vernieuwen verschijnt hij automatisch op deze pagina.
+  </div>
+</main>
+
+  <div class="modal-backdrop" id="subModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Nieuwe subcategorie</div>
+        <button class="modal-close" id="modalClose" type="button" aria-label="Sluiten">×</button>
+      </div>
+
+      <form id="subForm">
+        <div class="field">
+          <label for="subName">Naam</label>
+          <input id="subName" required maxlength="60" placeholder="Bijv. ADHD">
+        </div>
+        <div class="field">
+          <label for="subDescription">Korte uitleg</label>
+          <textarea id="subDescription" required maxlength="180" placeholder="Bijv. Begrijp aandacht, impulsiviteit en dagelijkse strategieën."></textarea>
+        </div>
+        <div class="helper">
+          Deze toevoeging wordt in deze browser opgeslagen en blijft staan als je de pagina later opnieuw opent.
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="cancelAdd" type="button">Annuleren</button>
+          <button class="btn-primary" type="submit">Toevoegen</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="categories.js"></script>
+<script>
+const params=new URLSearchParams(location.search);
+const slug=params.get('cat');
+const cat=window.TUBE_CATEGORIES.find(c=>c.slug===slug) || window.TUBE_CATEGORIES[0];
+
+document.title=`Tube — ${cat.name}`;
+document.getElementById('title').textContent=cat.name;
+document.getElementById('intro').textContent=cat.description;
+
+const sublist=document.getElementById('sublist');
+const modal=document.getElementById('subModal');
+const addBtn=document.getElementById('addSubBtn');
+const modalClose=document.getElementById('modalClose');
+const cancelAdd=document.getElementById('cancelAdd');
+const form=document.getElementById('subForm');
+const nameInput=document.getElementById('subName');
+const descInput=document.getElementById('subDescription');
+
+const storageKey=`tube-custom-subcategories:${cat.slug}`;
+
+function getCustomSubs(){
+  try{
+    return JSON.parse(localStorage.getItem(storageKey) || '[]');
+  }catch(e){
+    return [];
+  }
+}
+
+function saveCustomSubs(items){
+  localStorage.setItem(storageKey, JSON.stringify(items));
+}
+
+function renderSubs(){
+  const baseSubs=(cat.subcategories || []).map(item => ({...item, custom:false}));
+  const customSubs=getCustomSubs().map(item => ({...item, custom:true}));
+  const all=[...baseSubs,...customSubs];
+
+  if(!all.length){
+    sublist.innerHTML='<div class="empty">Voor deze categorie zijn nog geen subcategorieën toegevoegd.</div>';
+    return;
+  }
+
+  sublist.innerHTML=all.map(sub=>`
+    <div class="sub" tabindex="0" role="link"
+         data-sub="${escapeHtml(sub.name)}"
+         onclick="openSubcategory(this.dataset.sub)"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSubcategory(this.dataset.sub)}">
+      <div>
+        <div class="subname">${escapeHtml(sub.name)}${sub.custom ? '<span class="user-badge">zelf toegevoegd</span>' : ''}</div>
+        <div class="subdesc">${escapeHtml(sub.description)}</div>
+      </div>
+      <div class="arrow">→</div>
+    </div>
+  `).join('');
+}
+
+function openSubcategory(name){
+  location.href=`videos.html?cat=${encodeURIComponent(cat.slug)}&sub=${encodeURIComponent(name)}`;
+}
+
+function escapeHtml(value){
+  return String(value)
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+function openModal(){
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  setTimeout(()=>nameInput.focus(),50);
+}
+
+function closeModal(){
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+  form.reset();
+}
+
+addBtn.addEventListener('click',openModal);
+modalClose.addEventListener('click',closeModal);
+cancelAdd.addEventListener('click',closeModal);
+
+modal.addEventListener('click',e=>{
+  if(e.target===modal) closeModal();
+});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && modal.classList.contains('open')) closeModal();
+});
+
+form.addEventListener('submit',e=>{
+  e.preventDefault();
+
+  const name=nameInput.value.trim();
+  const description=descInput.value.trim();
+  if(!name || !description) return;
+
+  const custom=getCustomSubs();
+  custom.push({name,description});
+  saveCustomSubs(custom);
+  renderSubs();
+  closeModal();
+});
+
+renderSubs();
+</script>
+</body>
+</html>
