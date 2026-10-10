@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tube — leerjaar</title>
+<style>
+:root{--ink:#18384a;--muted:#708995;--line:#e4ebee;--soft:#f8fbfb;--accent:#4f8993}
+*{box-sizing:border-box}body{margin:0;background:#fff;color:var(--ink);font-family:Manrope,"Avenir Next","Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}header{height:82px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(22px,5vw,72px);border-bottom:1px solid #f0f3f4}
+.brand{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:650;letter-spacing:-.03em;cursor:pointer}.brandmark{width:26px;height:26px;border-radius:9px 3px 9px 3px;background:linear-gradient(135deg,#92c2c8,#5f99a4)}
+.back{border:1px solid #d8e4e8;background:#fff;border-radius:24px;padding:10px 15px;cursor:pointer}
+main{max-width:900px;margin:0 auto;padding:64px 24px 90px}.crumb{font-size:12px;color:#7b96a2;margin-bottom:20px}.crumb button{border:0;background:transparent;padding:0;color:#668795;cursor:pointer}
+.eyebrow{font-size:12px;font-weight:650;letter-spacing:.12em;text-transform:uppercase;color:#7795a3;margin-bottom:16px}
+h1{font-size:clamp(38px,5vw,58px);line-height:1.05;letter-spacing:-.045em;font-weight:520;margin:0 0 14px}
+.intro{font-size:15px;line-height:1.6;color:var(--muted);margin-bottom:42px;max-width:680px}
+.levels{border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 20px 46px rgba(24,56,74,.06)}
+.level{display:grid;grid-template-columns:1fr 26px;align-items:center;gap:18px;min-height:96px;padding:22px 24px;border-bottom:1px solid #edf2f4;cursor:pointer}.level:last-child{border-bottom:0}.level:hover{background:var(--soft)}
+.level-name{font-size:17px;font-weight:680;margin-bottom:6px}.level-desc{font-size:13px;line-height:1.45;color:var(--muted)}.arrow{font-size:23px;color:#7896a3}
+</style>
+</head>
+<body>
+<header>
+<div class="brand" onclick="location.href='index.html'"><div class="brandmark"></div><span>Tube</span></div>
+<button class="back" id="backBtn">← Terug</button>
+</header>
+<main>
+<div class="crumb"><button onclick="location.href='index.html'">Home</button> &nbsp;/&nbsp; <span id="catCrumb"></span> &nbsp;/&nbsp; <span id="subCrumb"></span></div>
+<div class="eyebrow">Taal</div>
+<h1 id="title"></h1>
+<div class="intro" id="intro"></div>
+<div class="levels" id="levels"></div>
+</main>
+<script src="categories.js"></script>
+<script>
+const params=new URLSearchParams(location.search);
+const catSlug=params.get('cat');
+const subName=params.get('sub');
+const cat=window.TUBE_CATEGORIES.find(c=>c.slug===catSlug);
+const sub=cat?.subcategories?.find(s=>s.name===subName);
+document.getElementById('backBtn').onclick=()=>location.href=`category.html?cat=${encodeURIComponent(catSlug)}`;
+document.getElementById('catCrumb').textContent=cat?.name || 'Categorie';
+document.getElementById('subCrumb').textContent=sub?.name || 'Taal';
+document.getElementById('title').textContent=sub?.name || 'Taal';
+document.getElementById('intro').textContent=sub?.description || '';
+document.title=`Tube — ${sub?.name || 'Taal'}`;
+
+const levels=document.getElementById('levels');
+const data=sub?.levels || [];
+levels.innerHTML=data.map(level=>`
+  <div class="level" tabindex="0" role="link"
+    onclick="openLevel('${level.name.replaceAll("'","\\'")}')"
+    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openLevel('${level.name.replaceAll("'","\\'")}')}">
+    <div><div class="level-name">${level.name}</div><div class="level-desc">${level.description}</div></div>
+    <div class="arrow">→</div>
+  </div>
+`).join('');
+
+function openLevel(level){
+  location.href=`phases.html?cat=${encodeURIComponent(catSlug)}&sub=${encodeURIComponent(subName)}&level=${encodeURIComponent(level)}`;
+}
+</script>
+</body>
+</html>
