@@ -171,6 +171,11 @@ function renderSubs(){
 }
 
 function openSubcategory(name){
+  const sub=(cat.subcategories || []).find(item=>item.name===name);
+  if(sub && Array.isArray(sub.levels) && sub.levels.length){
+    location.href=`levels.html?cat=${encodeURIComponent(cat.slug)}&sub=${encodeURIComponent(name)}`;
+    return;
+  }
   location.href=`videos.html?cat=${encodeURIComponent(cat.slug)}&sub=${encodeURIComponent(name)}`;
 }
 
