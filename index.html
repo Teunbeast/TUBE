@@ -79,14 +79,28 @@ toggle.addEventListener('click',()=>area.classList.toggle('open'));
 closeBtn.addEventListener('click',()=>area.classList.remove('open'));
 
 function norm(v){return v.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+
+function getCustomSubcategories(cat){
+  try{
+    return JSON.parse(localStorage.getItem(`tube-custom-subcategories:${cat.slug}`) || '[]');
+  }catch(e){
+    return [];
+  }
+}
+
 input.addEventListener('input',()=>{
   const q=norm(input.value.trim());
   if(q.length<2){suggestions.classList.remove('visible');suggestions.innerHTML='';return}
+
   const matches=window.TUBE_CATEGORIES.filter(cat=>{
-    const hay=norm(`${cat.name} ${cat.description} ${cat.subcategories.map(s=>s.name+' '+s.description).join(' ')}`);
+    const customSubs=getCustomSubcategories(cat);
+    const allSubs=[...(cat.subcategories || []),...customSubs];
+    const hay=norm(`${cat.name} ${cat.description} ${allSubs.map(s=>s.name+' '+s.description).join(' ')}`);
     return q.split(/\s+/).some(t=>t.length>1 && hay.includes(t));
   }).slice(0,3);
+
   if(!matches.length){suggestions.classList.remove('visible');suggestions.innerHTML='';return}
+
   suggestions.innerHTML=`<div class="suggestion-label">Relevante categorieën</div>`+matches.map(cat=>`
     <button class="suggestion" onclick="location.href='${categoryUrl(cat.slug)}'">
       <span><span class="suggestion-name">${cat.name}</span><span class="suggestion-reason">${cat.description}</span></span><span>→</span>
