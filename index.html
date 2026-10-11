@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tube — homepage</title>
+<script>
+(function(){
+  const saved=localStorage.getItem('tube-theme') || 'night';
+  document.documentElement.setAttribute('data-theme',saved);
+})();
+</script>
 <style>
 :root{--bg:#fff;--ink:#18384a;--muted:#6f8794;--line:#dfe8ec;--accent:#4f8993;--shadow:0 16px 44px rgba(24,56,74,.08)}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#fff;color:var(--ink);font-family:Manrope,"Avenir Next","Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased}
@@ -74,128 +80,127 @@ h1 .accent{color:#3f8b83}
 .iconwrap{background:linear-gradient(145deg,#fbfefd,#edf6f4);border-color:#cee0df;color:#477d7c}
 
 
-/* TUBE DESIGN EXPERIMENT 02 — immersive dark focus, eigen stijl */
-body{
+
+/* TUBE THEME SWITCH */
+.header-left{display:flex;align-items:center;gap:14px}
+.theme-switch{
+  display:flex;align-items:center;gap:3px;padding:3px;
+  border:1px solid rgba(111,135,145,.20);border-radius:18px;
+  background:rgba(255,255,255,.58);backdrop-filter:blur(10px)
+}
+.theme-choice{
+  height:30px;padding:0 10px;border:0;border-radius:14px;background:transparent;
+  color:#6c7f89;font-size:11.5px;font-weight:650;cursor:pointer;
+  display:flex;align-items:center;gap:6px;transition:background .18s ease,color .18s ease,box-shadow .18s ease
+}
+html[data-theme="day"] .theme-choice[data-theme-choice="day"]{
+  background:#fff;color:#18384a;box-shadow:0 4px 14px rgba(24,56,74,.09)
+}
+html[data-theme="night"] .theme-switch{
+  background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.10)
+}
+html[data-theme="night"] .theme-choice{color:#8f97a6}
+html[data-theme="night"] .theme-choice[data-theme-choice="night"]{
+  color:#fff;background:linear-gradient(135deg,rgba(109,75,255,.88),rgba(42,168,255,.78));
+  box-shadow:0 5px 16px rgba(77,103,255,.22)
+}
+@media(max-width:640px){
+  .header-left{gap:9px}.theme-label{display:none}.theme-choice{width:31px;padding:0;justify-content:center}
+}
+
+
+/* TUBE NIGHT MODE — paarse focusstijl */
+html[data-theme="night"] body{
   background:
     radial-gradient(circle at 78% 12%,rgba(111,70,255,.25),transparent 28%),
     radial-gradient(circle at 18% 22%,rgba(47,112,255,.18),transparent 30%),
     radial-gradient(circle at 50% 115%,rgba(0,174,255,.10),transparent 36%),
     linear-gradient(180deg,#0a0b10 0%,#0d0f15 48%,#0b0d12 100%);
-  color:#f5f7fb;
-  background-attachment:fixed;
+  color:#f5f7fb;background-attachment:fixed
 }
-.shell{position:relative;overflow:hidden}
-.shell:before{
+html[data-theme="night"] .shell{position:relative;overflow:hidden}
+html[data-theme="night"] .shell:before{
   content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
-  background:
-    linear-gradient(115deg,rgba(255,255,255,.025),transparent 24%),
-    radial-gradient(circle at 50% 32%,rgba(255,255,255,.03),transparent 32%);
+  background:linear-gradient(115deg,rgba(255,255,255,.025),transparent 24%),radial-gradient(circle at 50% 32%,rgba(255,255,255,.03),transparent 32%)
 }
-header{
-  background:rgba(10,11,16,.66);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
-  border-bottom:1px solid rgba(255,255,255,.06);
+html[data-theme="night"] header{
+  background:rgba(10,11,16,.66);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.06)
 }
-.brand{color:#fff;font-weight:720}
-.brandmark{
+html[data-theme="night"] .brand{color:#fff;font-weight:720}
+html[data-theme="night"] .brandmark{
   background:linear-gradient(145deg,#6f46ff 0%,#4d7cff 48%,#28b8ff 100%);
-  box-shadow:0 0 28px rgba(92,91,255,.35);
+  box-shadow:0 0 28px rgba(92,91,255,.35)
 }
-.login{
-  color:#f4f6fb;
-  border:1px solid rgba(255,255,255,.12);
-  padding:10px 15px;border-radius:18px;
-  background:rgba(255,255,255,.045);
+html[data-theme="night"] .login{
+  color:#f4f6fb;border:1px solid rgba(255,255,255,.12);
+  padding:10px 15px;border-radius:18px;background:rgba(255,255,255,.045)
 }
-.hero{
-  min-height:560px;padding:74px 20px 86px;position:relative;
+html[data-theme="night"] .hero{min-height:560px;padding:74px 20px 86px;position:relative}
+html[data-theme="night"] .hero:before{
+  content:"";position:absolute;width:min(760px,84vw);height:min(440px,54vw);border-radius:50%;
+  background:radial-gradient(circle at 58% 44%,rgba(120,68,255,.28),transparent 40%),radial-gradient(circle at 35% 58%,rgba(42,127,255,.20),transparent 44%);
+  filter:blur(34px);z-index:-1;top:9%;left:50%;transform:translateX(-50%)
 }
-.hero:before{
-  content:"";position:absolute;width:min(760px,84vw);height:min(440px,54vw);
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 58% 44%,rgba(120,68,255,.28),transparent 40%),
-    radial-gradient(circle at 35% 58%,rgba(42,127,255,.20),transparent 44%);
-  filter:blur(34px);z-index:-1;top:9%;left:50%;transform:translateX(-50%);
+html[data-theme="night"] h1{
+  color:#fff;font-size:clamp(48px,5.4vw,78px);line-height:.98;letter-spacing:-.052em;
+  font-weight:760;text-shadow:none;margin-bottom:38px
 }
-h1{
-  color:#fff;
-  font-size:clamp(48px,5.4vw,78px);
-  line-height:.98;
-  letter-spacing:-.052em;
-  font-weight:760;
-  text-shadow:none;
-  margin-bottom:38px;
+html[data-theme="night"] h1 .accent{
+  color:#fff;background:linear-gradient(90deg,#ffffff 15%,#bfc8ff 48%,#8dbdff 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent
 }
-h1 .accent{
-  color:#fff;
-  background:linear-gradient(90deg,#ffffff 15%,#bfc8ff 48%,#8dbdff 100%);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+html[data-theme="night"] .search-stack{width:min(790px,92vw)}
+html[data-theme="night"] .search{
+  min-height:72px;background:rgba(28,30,38,.92);border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 24px 70px rgba(0,0,0,.34),0 0 0 1px rgba(115,100,255,.05);backdrop-filter:blur(20px)
 }
-.search-stack{width:min(790px,92vw)}
-.search{
-  min-height:72px;
-  background:rgba(28,30,38,.92);
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow:0 24px 70px rgba(0,0,0,.34),0 0 0 1px rgba(115,100,255,.05);
-  backdrop-filter:blur(20px);
+html[data-theme="night"] .search:focus-within{
+  border-color:rgba(110,126,255,.55);box-shadow:0 26px 74px rgba(0,0,0,.38),0 0 0 4px rgba(90,100,255,.10)
 }
-.search:focus-within{
-  border-color:rgba(110,126,255,.55);
-  box-shadow:0 26px 74px rgba(0,0,0,.38),0 0 0 4px rgba(90,100,255,.10);
+html[data-theme="night"] .search svg{color:#8d96a8}
+html[data-theme="night"] .search input{color:#f6f8fc;font-size:16px}
+html[data-theme="night"] .search input::placeholder{color:#7f8796}
+html[data-theme="night"] .search button{
+  min-width:106px;background:linear-gradient(135deg,#6d4bff 0%,#4e72ff 55%,#2aa8ff 100%);
+  box-shadow:0 10px 28px rgba(77,103,255,.28)
 }
-.search svg{color:#8d96a8}
-.search input{color:#f6f8fc;font-size:16px}
-.search input::placeholder{color:#7f8796}
-.search button{
-  min-width:106px;
-  background:linear-gradient(135deg,#6d4bff 0%,#4e72ff 55%,#2aa8ff 100%);
-  box-shadow:0 10px 28px rgba(77,103,255,.28);
+html[data-theme="night"] .category-area{padding-top:0}
+html[data-theme="night"] .category-toggle{
+  color:#f2f5fa;background:rgba(26,28,35,.88);border:1px solid rgba(255,255,255,.09);
+  box-shadow:0 14px 42px rgba(0,0,0,.24);backdrop-filter:blur(18px)
 }
-.category-area{padding-top:0}
-.category-toggle{
-  color:#f2f5fa;
-  background:rgba(26,28,35,.88);
-  border:1px solid rgba(255,255,255,.09);
-  box-shadow:0 14px 42px rgba(0,0,0,.24);
-  backdrop-filter:blur(18px);
+html[data-theme="night"] .panel,
+html[data-theme="night"] .suggestions{
+  background:rgba(18,20,26,.96);border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 26px 74px rgba(0,0,0,.35);backdrop-filter:blur(20px)
 }
-.panel,.suggestions{
-  background:rgba(18,20,26,.96);
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 26px 74px rgba(0,0,0,.35);
-  backdrop-filter:blur(20px);
+html[data-theme="night"] .panel-head{border-bottom-color:rgba(255,255,255,.07)}
+html[data-theme="night"] .panel-title,
+html[data-theme="night"] .suggestion-name,
+html[data-theme="night"] .name{color:#f5f7fb}
+html[data-theme="night"] .close{color:#aab2c0}
+html[data-theme="night"] .suggestion-label{color:#777f91}
+html[data-theme="night"] .list{gap:10px;padding:10px 0 0}
+html[data-theme="night"] .item,
+html[data-theme="night"] .suggestion{
+  color:#eef2f8;background:#171920;border:1px solid rgba(255,255,255,.055);border-radius:15px
 }
-.panel-head{border-bottom-color:rgba(255,255,255,.07)}
-.panel-title,.suggestion-name,.name{color:#f5f7fb}
-.close{color:#aab2c0}
-.suggestion-label{color:#777f91}
-.list{gap:10px;padding:10px 0 0}
-.item,.suggestion{
-  color:#eef2f8;
-  background:#171920;
-  border:1px solid rgba(255,255,255,.055);
-  border-radius:15px;
+html[data-theme="night"] .item{min-height:70px;padding:12px 12px}
+html[data-theme="night"] .suggestion{margin:8px 10px;width:calc(100% - 20px);border-top:1px solid rgba(255,255,255,.055)}
+html[data-theme="night"] .item:last-child{border-bottom:1px solid rgba(255,255,255,.055)}
+html[data-theme="night"] .item:hover,
+html[data-theme="night"] .suggestion:hover{background:#1e2129;border-color:rgba(103,122,255,.26)}
+html[data-theme="night"] .iconwrap{
+  color:#aab8ff;background:linear-gradient(145deg,#202333,#171a25);border-color:rgba(114,124,255,.18)
 }
-.item{min-height:70px;padding:12px 12px}
-.suggestion{margin:8px 10px;width:calc(100% - 20px);border-top:1px solid rgba(255,255,255,.055)}
-.item:last-child{border-bottom:1px solid rgba(255,255,255,.055)}
-.item:hover,.suggestion:hover{
-  background:#1e2129;
-  border-color:rgba(103,122,255,.26);
-}
-.iconwrap{
-  color:#aab8ff;
-  background:linear-gradient(145deg,#202333,#171a25);
-  border-color:rgba(114,124,255,.18);
-}
-.desc,.suggestion-reason{color:#8f97a6}
-.arrow{color:#8893ab}
+html[data-theme="night"] .desc,
+html[data-theme="night"] .suggestion-reason{color:#8f97a6}
+html[data-theme="night"] .arrow{color:#8893ab}
 @media(max-width:640px){
-  .hero{min-height:500px;padding-top:64px}
-  h1{font-size:46px}
-  .search{min-height:66px}
+  html[data-theme="night"] .hero{min-height:500px;padding-top:64px}
+  html[data-theme="night"] h1{font-size:46px}
+  html[data-theme="night"] .search{min-height:66px}
 }
 
 </style>
@@ -203,7 +208,13 @@ h1 .accent{
 <body>
 <div class="shell">
 <header>
-  <div class="brand"><div class="brandmark"></div><span>Tube</span></div>
+  <div class="header-left">
+<div class="brand"><div class="brandmark"></div><span>Tube</span></div>
+<div class="theme-switch" aria-label="Weergavemodus">
+  <button class="theme-choice" type="button" data-theme-choice="day" aria-label="Overdagmodus"><span>☀</span><span class="theme-label">Overdag</span></button>
+  <button class="theme-choice" type="button" data-theme-choice="night" aria-label="Nachtmodus"><span>☾</span><span class="theme-label">Nacht</span></button>
+</div>
+</div>
   <button class="login">Inloggen</button>
 </header>
 <main>
@@ -285,6 +296,18 @@ input.addEventListener('input',()=>{
 });
 document.getElementById('searchForm').addEventListener('submit',e=>e.preventDefault());
 document.addEventListener('click',e=>{if(!e.target.closest('.search-stack'))suggestions.classList.remove('visible')});
+</script>
+<script>
+(function(){
+  const buttons=document.querySelectorAll('[data-theme-choice]');
+  function setTheme(theme){
+    document.documentElement.setAttribute('data-theme',theme);
+    localStorage.setItem('tube-theme',theme);
+    buttons.forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.themeChoice===theme)));
+  }
+  buttons.forEach(btn=>btn.addEventListener('click',()=>setTheme(btn.dataset.themeChoice)));
+  setTheme(document.documentElement.getAttribute('data-theme') || 'night');
+})();
 </script>
 </body>
 </html>
