@@ -21,6 +21,58 @@ h1{margin:0 0 34px;font-size:clamp(42px,4.15vw,62px);line-height:1.08;letter-spa
 .panel-head{display:flex;align-items:center;justify-content:space-between;min-height:58px;padding:0 4px 0 6px;border-bottom:1px solid #edf2f4}.panel-title{font-size:15px;font-weight:650}.close{width:36px;height:36px;border:0;border-radius:50%;background:transparent;font-size:22px;cursor:pointer}
 .list{display:flex;flex-direction:column}.item{width:100%;min-height:76px;display:grid;grid-template-columns:42px 1fr 24px;align-items:center;gap:15px;border:0;border-bottom:1px solid #edf2f4;background:#fff;text-align:left;padding:12px 6px;cursor:pointer}.item:last-child{border-bottom:0}.item:hover{background:#fafcfc}.iconwrap{width:38px;height:38px;border:1px solid #d9e5e9;border-radius:50%;display:grid;place-items:center;color:#517887;background:#fcfdfd}.copy{min-width:0;display:flex;align-items:baseline;flex-wrap:wrap;gap:0 6px}.name{font-size:14px;font-weight:640;white-space:nowrap}.name:after{content:" -"}.desc{font-size:12.5px;line-height:1.35;color:var(--muted)}.arrow{font-size:21px;color:#7c99a6}
 @media(max-width:640px){header{height:72px}.brand{font-size:21px}.hero{min-height:390px;padding:52px 18px 58px}h1{font-size:39px}.search-stack{width:min(94vw,760px)}.search{padding-left:20px;min-height:64px}.search input{font-size:14px}.search button{min-width:74px;height:46px;padding:0 15px;font-size:13px}}
+
+/* TUBE DESIGN EXPERIMENT 01 — rustig, warm en meer diepte */
+body{
+  background:
+    radial-gradient(circle at 14% 18%,rgba(142,205,195,.23),transparent 31%),
+    radial-gradient(circle at 86% 8%,rgba(180,205,230,.25),transparent 28%),
+    linear-gradient(180deg,#f7fbfa 0%,#fffdf9 54%,#f7fafb 100%);
+  background-attachment:fixed;
+}
+header{
+  background:rgba(248,252,251,.72);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(211,226,226,.55);
+}
+.brandmark{
+  background:linear-gradient(135deg,#8fd3c6,#4f8993 62%,#315e70);
+  box-shadow:0 8px 22px rgba(79,137,147,.20);
+}
+.hero{position:relative}
+.hero:before{
+  content:"";position:absolute;width:min(560px,72vw);height:min(330px,48vw);
+  border-radius:50%;background:rgba(196,225,218,.22);filter:blur(70px);
+  z-index:-1;top:18%;left:50%;transform:translateX(-50%);
+}
+h1{color:#153746;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+h1 .accent{color:#3f8b83}
+.search{
+  background:rgba(255,255,255,.88);
+  border-color:rgba(195,215,216,.82);
+  box-shadow:0 20px 55px rgba(40,79,87,.12),0 2px 10px rgba(40,79,87,.04);
+  backdrop-filter:blur(14px);
+}
+.search:focus-within{
+  border-color:#8bb9b5;
+  box-shadow:0 22px 58px rgba(40,79,87,.14),0 0 0 4px rgba(79,137,147,.07);
+}
+.search button{background:linear-gradient(135deg,#244b5c,#18384a)}
+.category-toggle{
+  background:rgba(255,255,255,.72);border-color:rgba(190,211,213,.9);
+  box-shadow:0 10px 30px rgba(36,74,84,.06);backdrop-filter:blur(12px)
+}
+.panel,.suggestions{
+  background:rgba(255,255,255,.92);
+  border-color:rgba(205,221,222,.88);
+  box-shadow:0 24px 60px rgba(35,72,82,.10);
+  backdrop-filter:blur(16px)
+}
+.item,.suggestion{background:transparent}
+.item:hover,.suggestion:hover{background:rgba(235,246,244,.68)}
+.iconwrap{background:linear-gradient(145deg,#fbfefd,#edf6f4);border-color:#cee0df;color:#477d7c}
+
 </style>
 </head>
 <body>
