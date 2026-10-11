@@ -105,10 +105,14 @@ html[data-theme="day"] .arrival{background:rgba(240,247,247,.90)}
 .arrival-ring:nth-child(3){width:56%;height:56%;animation-delay:.10s}
 .arrival-ring:nth-child(4){width:36%;height:36%;animation-delay:.14s}
 .arrival-core{
-  position:relative;z-index:2;width:112px;height:112px;border-radius:50%;
-  display:grid;place-items:center;color:#fff;font-size:16px;font-weight:760;letter-spacing:.16em;
-  background:radial-gradient(circle at 35% 30%,rgba(159,137,255,.78),rgba(86,72,226,.72) 38%,rgba(20,25,43,.92) 78%);
-  border:1px solid rgba(255,255,255,.14);box-shadow:0 0 52px rgba(92,91,255,.32)
+  position:relative;z-index:2;
+  display:grid;place-items:center;
+  color:rgba(214,220,255,.92);
+  font-size:clamp(30px,3vw,42px);
+  font-weight:500;
+  letter-spacing:.24em;
+  text-indent:.24em;
+  text-shadow:0 0 24px rgba(92,91,255,.34),0 0 42px rgba(42,168,255,.14)
 }
 @keyframes arrivalPulse{from{transform:scale(.62);opacity:0}to{transform:scale(1);opacity:1}}
 @media(max-width:640px){
