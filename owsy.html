@@ -116,47 +116,52 @@ html[data-theme="day"] body{
   <div class="hint">↔&nbsp; Sleep om te draaien</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <script>
 const canvas=document.getElementById('globe');
 const ctx=canvas.getContext('2d');
 const modeBtn=document.getElementById('modeBtn');
 
-let W=0,H=0,dpr=1,yaw=-0.48,pitch=0.14,targetYaw=yaw,targetPitch=pitch;
-let dragging=false,lastX=0,lastY=0,zoom=1,lastTime=performance.now();
+let W=0,H=0,dpr=1;
+let dragging=false,lastX=0,lastY=0;
+let rotation=[-12,-10,0];
+let targetRotation=[...rotation];
+let zoom=1;
+let targetZoom=1;
+let lastTime=performance.now();
+let countryFeatures=[];
+let worldReady=false;
 
-const continents=[
-  [[-168,70],[-145,72],[-125,62],[-115,52],[-98,49],[-82,45],[-66,47],[-57,53],[-62,37],[-78,27],[-97,17],[-107,22],[-117,32],[-126,48],[-150,60],[-168,70]],
-  [[-81,12],[-70,10],[-54,5],[-36,-6],[-42,-22],[-54,-35],[-67,-55],[-76,-41],[-71,-18],[-81,12]],
-  [[-17,35],[2,37],[20,32],[34,29],[50,12],[43,-12],[32,-34],[18,-35],[5,-26],[-5,-5],[-17,15],[-17,35]],
-  [[-10,36],[2,46],[15,55],[30,64],[55,70],[82,69],[110,63],[140,57],[170,49],[150,36],[130,23],[112,10],[95,17],[80,28],[62,32],[48,30],[35,40],[20,45],[-10,36]],
-  [[68,24],[75,8],[88,21],[82,29],[68,24]],
-  [[100,8],[113,2],[121,-8],[112,-8],[100,8]],
-  [[112,-10],[131,-12],[153,-27],[146,-40],[119,-35],[112,-10]],
-  [[-55,82],[-24,78],[-30,61],[-49,60],[-55,82]],
-  [[130,33],[140,43],[145,38],[139,31],[130,33]]
-];
+const projection=d3.geoOrthographic()
+  .clipAngle(90)
+  .precision(.35);
+
+const geoPath=d3.geoPath(projection,ctx);
+const graticule=d3.geoGraticule10();
 
 function theme(){
   return document.documentElement.getAttribute('data-theme') || 'night';
 }
+
 function palette(){
   if(theme()==='day'){
     return {
-      sphere:['rgba(225,236,244,.50)','rgba(198,213,232,.17)'],
-      grid:'rgba(66,98,123,.16)',
-      coast:'rgba(75,86,205,.72)',
-      glow:'rgba(89,91,236,.22)',
-      rim:'rgba(73,104,186,.46)',
-      dots:'rgba(54,112,205,.28)'
+      sphereFill:'rgba(215,229,240,.20)',
+      sphereGlow:'rgba(82,96,215,.18)',
+      grid:'rgba(75,102,128,.12)',
+      country:'rgba(70,83,196,.72)',
+      countryGlow:'rgba(92,91,236,.22)',
+      rim:'rgba(73,104,186,.42)'
     };
   }
   return {
-    sphere:['rgba(60,67,112,.36)','rgba(20,24,42,.20)'],
-    grid:'rgba(143,155,255,.17)',
-    coast:'rgba(151,161,255,.88)',
-    glow:'rgba(86,78,255,.30)',
-    rim:'rgba(131,151,255,.62)',
-    dots:'rgba(65,183,255,.34)'
+    sphereFill:'rgba(44,50,86,.22)',
+    sphereGlow:'rgba(89,81,255,.28)',
+    grid:'rgba(145,155,255,.12)',
+    country:'rgba(166,174,255,.88)',
+    countryGlow:'rgba(90,86,255,.32)',
+    rim:'rgba(132,151,255,.58)'
   };
 }
 
@@ -165,128 +170,124 @@ function resize(){
   dpr=Math.min(window.devicePixelRatio||1,2);
   canvas.width=Math.round(rect.width*dpr);
   canvas.height=Math.round(rect.height*dpr);
-  W=rect.width;H=rect.height;
+  W=rect.width;
+  H=rect.height;
   ctx.setTransform(dpr,0,0,dpr,0,0);
+  projection
+    .translate([W/2,H/2])
+    .scale(Math.min(W,H)*.39*zoom)
+    .rotate(rotation);
 }
 window.addEventListener('resize',resize);
 resize();
 
-function xyz(lon,lat){
-  const a=lon*Math.PI/180,b=lat*Math.PI/180;
-  return [Math.cos(b)*Math.sin(a),Math.sin(b),Math.cos(b)*Math.cos(a)];
-}
-function rotate(p){
-  let [x,y,z]=p;
-  let cy=Math.cos(yaw),sy=Math.sin(yaw);
-  let x1=x*cy+z*sy,z1=-x*sy+z*cy;
-  let cp=Math.cos(pitch),sp=Math.sin(pitch);
-  let y1=y*cp-z1*sp,z2=y*sp+z1*cp;
-  return [x1,y1,z2];
-}
-function project(p,r){
-  const [x,y,z]=rotate(p);
-  return [W/2+x*r,H/2-y*r,z];
-}
-function linePath(points,r,color,width,alphaBack=.08){
-  let started=false,prevVisible=false;
+function drawSphere(p){
+  ctx.save();
   ctx.beginPath();
-  for(const pair of points){
-    const q=project(xyz(pair[0],pair[1]),r);
-    const visible=q[2]>-0.02;
-    if(visible){
-      if(!started||!prevVisible){ctx.moveTo(q[0],q[1]);started=true}else ctx.lineTo(q[0],q[1]);
-    }
-    prevVisible=visible;
-  }
-  ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();
-}
-function drawGrid(r,p){
+  geoPath({type:'Sphere'});
+  ctx.fillStyle=p.sphereFill;
+  ctx.shadowColor=p.sphereGlow;
+  ctx.shadowBlur=42;
+  ctx.fill();
+  ctx.restore();
+
   ctx.save();
-  ctx.lineWidth=1;
-  for(let lat=-60;lat<=60;lat+=20){
-    const pts=[];
-    for(let lon=-180;lon<=180;lon+=4) pts.push([lon,lat]);
-    linePath(pts,r,p.grid,1);
-  }
-  for(let lon=-160;lon<180;lon+=20){
-    const pts=[];
-    for(let lat=-88;lat<=88;lat+=3) pts.push([lon,lat]);
-    linePath(pts,r,p.grid,1);
+  ctx.beginPath();
+  geoPath({type:'Sphere'});
+  ctx.strokeStyle=p.rim;
+  ctx.lineWidth=1.25;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawGraticule(p){
+  ctx.save();
+  ctx.beginPath();
+  geoPath(graticule);
+  ctx.strokeStyle=p.grid;
+  ctx.lineWidth=.7;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawCountries(p){
+  if(!worldReady) return;
+
+  ctx.save();
+  ctx.lineJoin='round';
+  ctx.lineCap='round';
+  ctx.strokeStyle=p.country;
+  ctx.lineWidth=1.05;
+  ctx.shadowColor=p.countryGlow;
+  ctx.shadowBlur=7;
+
+  for(const feature of countryFeatures){
+    ctx.beginPath();
+    geoPath(feature);
+    ctx.stroke();
   }
   ctx.restore();
 }
-function drawDots(r,p){
-  ctx.save();
-  ctx.fillStyle=p.dots;
-  for(let lat=-70;lat<=70;lat+=10){
-    for(let lon=-180;lon<180;lon+=12){
-      const q=project(xyz(lon,lat),r);
-      if(q[2]>.15){
-        const size=.6+q[2]*1.05;
-        ctx.globalAlpha=.18+q[2]*.32;
-        ctx.beginPath();ctx.arc(q[0],q[1],size,0,Math.PI*2);ctx.fill();
-      }
-    }
-  }
-  ctx.restore();
-}
+
 function draw(){
   ctx.clearRect(0,0,W,H);
   const p=palette();
-  const r=Math.min(W,H)*.39*zoom;
-  const cx=W/2,cy=H/2;
 
-  ctx.save();
-  ctx.shadowColor=p.glow;ctx.shadowBlur=48;
-  const halo=ctx.createRadialGradient(cx-r*.26,cy-r*.32,r*.08,cx,cy,r);
-  halo.addColorStop(0,p.sphere[0]);halo.addColorStop(.72,p.sphere[1]);halo.addColorStop(1,'rgba(5,8,16,.06)');
-  ctx.fillStyle=halo;ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fill();
-  ctx.restore();
+  projection
+    .translate([W/2,H/2])
+    .scale(Math.min(W,H)*.39*zoom)
+    .rotate(rotation);
 
-  ctx.save();
-  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();
-  drawDots(r,p);
-  drawGrid(r,p);
-  ctx.shadowColor=p.glow;ctx.shadowBlur=12;
-  continents.forEach(c=>linePath(c,r,p.coast,1.65));
-  ctx.restore();
-
-  const rim=ctx.createLinearGradient(cx-r,cy-r,cx+r,cy+r);
-  rim.addColorStop(0,'rgba(255,255,255,.08)');
-  rim.addColorStop(.35,p.rim);
-  rim.addColorStop(.72,'rgba(72,190,255,.25)');
-  rim.addColorStop(1,'rgba(255,255,255,.06)');
-  ctx.strokeStyle=rim;ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
-
-  ctx.strokeStyle=theme()==='night'?'rgba(116,99,255,.11)':'rgba(76,104,183,.10)';
-  ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(cx,cy,r*1.045,0,Math.PI*2);ctx.stroke();
+  drawSphere(p);
+  drawGraticule(p);
+  drawCountries(p);
 }
+
 function animate(now){
-  const dt=Math.min(32,now-lastTime);lastTime=now;
-  if(!dragging) targetYaw+=dt*.000035;
-  yaw+=(targetYaw-yaw)*.09;
-  pitch+=(targetPitch-pitch)*.09;
-  draw();requestAnimationFrame(animate);
+  const dt=Math.min(32,now-lastTime);
+  lastTime=now;
+
+  if(!dragging){
+    targetRotation[0]+=dt*.003;
+  }
+
+  rotation[0]+=(targetRotation[0]-rotation[0])*.095;
+  rotation[1]+=(targetRotation[1]-rotation[1])*.095;
+  zoom+=(targetZoom-zoom)*.10;
+
+  draw();
+  requestAnimationFrame(animate);
 }
 requestAnimationFrame(animate);
 
 canvas.addEventListener('pointerdown',e=>{
-  dragging=true;lastX=e.clientX;lastY=e.clientY;canvas.setPointerCapture(e.pointerId);
+  dragging=true;
+  lastX=e.clientX;
+  lastY=e.clientY;
+  canvas.setPointerCapture(e.pointerId);
 });
+
 canvas.addEventListener('pointermove',e=>{
-  if(!dragging)return;
-  const dx=e.clientX-lastX,dy=e.clientY-lastY;lastX=e.clientX;lastY=e.clientY;
-  targetYaw+=dx*.006;
-  targetPitch=Math.max(-1.05,Math.min(1.05,targetPitch+dy*.005));
+  if(!dragging) return;
+  const dx=e.clientX-lastX;
+  const dy=e.clientY-lastY;
+  lastX=e.clientX;
+  lastY=e.clientY;
+
+  targetRotation[0]+=dx*.23;
+  targetRotation[1]=Math.max(-72,Math.min(72,targetRotation[1]-dy*.20));
 });
-function endDrag(e){dragging=false;try{canvas.releasePointerCapture(e.pointerId)}catch(_){}}
+
+function endDrag(e){
+  dragging=false;
+  try{canvas.releasePointerCapture(e.pointerId)}catch(_){}
+}
 canvas.addEventListener('pointerup',endDrag);
 canvas.addEventListener('pointercancel',endDrag);
+
 canvas.addEventListener('wheel',e=>{
   e.preventDefault();
-  zoom=Math.max(.82,Math.min(1.14,zoom-e.deltaY*.00055));
+  targetZoom=Math.max(.82,Math.min(1.15,targetZoom-e.deltaY*.0006));
 },{passive:false});
 
 modeBtn.addEventListener('click',()=>{
@@ -295,6 +296,18 @@ modeBtn.addEventListener('click',()=>{
   localStorage.setItem('tube-theme',next);
 });
 
+fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+  .then(response=>{
+    if(!response.ok) throw new Error('Wereldkaart kon niet worden geladen');
+    return response.json();
+  })
+  .then(world=>{
+    countryFeatures=topojson.feature(world,world.objects.countries).features;
+    worldReady=true;
+  })
+  .catch(()=>{
+    worldReady=false;
+  });
 </script>
 </body>
 </html>
