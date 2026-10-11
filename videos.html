@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tube — video's</title>
+<script>
+(function(){
+  const saved=localStorage.getItem('tube-theme') || 'night';
+  document.documentElement.setAttribute('data-theme',saved);
+})();
+</script>
 <style>
 :root{
   --ink:#18384a;--muted:#718a96;--line:#e3ebee;--soft:#f8fbfb;
@@ -78,11 +84,141 @@ header{background:rgba(248,252,251,.74);backdrop-filter:blur(18px);-webkit-backd
 .back{background:rgba(255,255,255,.76);backdrop-filter:blur(10px)}
 .thumb{background:radial-gradient(circle at 70% 30%,rgba(255,255,255,.82),transparent 26%),linear-gradient(145deg,#d7ebe7,#eef5f4 56%,#cadde1)}
 
+
+/* TUBE THEME SWITCH */
+.header-left{display:flex;align-items:center;gap:14px}
+.theme-switch{
+  display:flex;align-items:center;gap:3px;padding:3px;
+  border:1px solid rgba(111,135,145,.20);border-radius:18px;
+  background:rgba(255,255,255,.58);backdrop-filter:blur(10px)
+}
+.theme-choice{
+  height:30px;padding:0 10px;border:0;border-radius:14px;background:transparent;
+  color:#6c7f89;font-size:11.5px;font-weight:650;cursor:pointer;
+  display:flex;align-items:center;gap:6px;transition:background .18s ease,color .18s ease,box-shadow .18s ease
+}
+html[data-theme="day"] .theme-choice[data-theme-choice="day"]{
+  background:#fff;color:#18384a;box-shadow:0 4px 14px rgba(24,56,74,.09)
+}
+html[data-theme="night"] .theme-switch{
+  background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.10)
+}
+html[data-theme="night"] .theme-choice{color:#8f97a6}
+html[data-theme="night"] .theme-choice[data-theme-choice="night"]{
+  color:#fff;background:linear-gradient(135deg,rgba(109,75,255,.88),rgba(42,168,255,.78));
+  box-shadow:0 5px 16px rgba(77,103,255,.22)
+}
+@media(max-width:640px){
+  .header-left{gap:9px}.theme-label{display:none}.theme-choice{width:31px;padding:0;justify-content:center}
+}
+
+
+/* TUBE NIGHT MODE — paarse focusstijl */
+html[data-theme="night"] body{
+  background:
+    radial-gradient(circle at 82% 8%,rgba(111,70,255,.22),transparent 27%),
+    radial-gradient(circle at 12% 16%,rgba(47,112,255,.15),transparent 28%),
+    linear-gradient(180deg,#0a0b10 0%,#0d0f15 52%,#0b0d12 100%);
+  color:#f5f7fb;background-attachment:fixed
+}
+html[data-theme="night"] header{
+  background:rgba(10,11,16,.70);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom-color:rgba(255,255,255,.06)
+}
+html[data-theme="night"] .brand{color:#fff}
+html[data-theme="night"] .brandmark{
+  background:linear-gradient(145deg,#6f46ff 0%,#4d7cff 48%,#28b8ff 100%);
+  box-shadow:0 0 28px rgba(92,91,255,.35)
+}
+html[data-theme="night"] h1,
+html[data-theme="night"] .title,
+html[data-theme="night"] .section-title,
+html[data-theme="night"] .subname,
+html[data-theme="night"] .level-name,
+html[data-theme="night"] .phase-name,
+html[data-theme="night"] .video-title,
+html[data-theme="night"] .panel-title{color:#f5f7fb}
+html[data-theme="night"] .eyebrow,
+html[data-theme="night"] .kicker{color:#aab8ff}
+html[data-theme="night"] .intro,
+html[data-theme="night"] .subdesc,
+html[data-theme="night"] .level-desc,
+html[data-theme="night"] .phase-desc,
+html[data-theme="night"] .desc,
+html[data-theme="night"] .video-meta,
+html[data-theme="night"] .crumb,
+html[data-theme="night"] .crumbs,
+html[data-theme="night"] .helper,
+html[data-theme="night"] .note-help{color:#8f97a6}
+html[data-theme="night"] .sublist,
+html[data-theme="night"] .levels,
+html[data-theme="night"] .phase,
+html[data-theme="night"] .video-card,
+html[data-theme="night"] .panel,
+html[data-theme="night"] .modal{
+  background:rgba(20,22,29,.94);border-color:rgba(255,255,255,.075);
+  box-shadow:0 22px 58px rgba(0,0,0,.28);backdrop-filter:blur(16px)
+}
+html[data-theme="night"] .sub,
+html[data-theme="night"] .level,
+html[data-theme="night"] .phase-head,
+html[data-theme="night"] .topics,
+html[data-theme="night"] .video-card,
+html[data-theme="night"] .panel-head,
+html[data-theme="night"] .toolbar,
+html[data-theme="night"] .note-status{
+  border-color:rgba(255,255,255,.07)
+}
+html[data-theme="night"] .sub:hover,
+html[data-theme="night"] .level:hover,
+html[data-theme="night"] .video-card:hover{background:#1b1e26}
+html[data-theme="night"] .topic,
+html[data-theme="night"] .transcript p,
+html[data-theme="night"] .note-editor{color:#aeb6c3}
+html[data-theme="night"] .topic{border-color:rgba(255,255,255,.06)}
+html[data-theme="night"] .topic:before{background:#7586ff}
+html[data-theme="night"] .back,
+html[data-theme="night"] .add-sub,
+html[data-theme="night"] .lessons,
+html[data-theme="night"] .tool,
+html[data-theme="night"] .language,
+html[data-theme="night"] .btn-secondary{
+  color:#eef2f8;background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.10)
+}
+html[data-theme="night"] .btn-primary{
+  background:linear-gradient(135deg,#6d4bff,#2aa8ff);border-color:transparent;color:#fff
+}
+html[data-theme="night"] .note,
+html[data-theme="night"] .toolbar,
+html[data-theme="night"] .note-status,
+html[data-theme="night"] .phase-head{background:rgba(255,255,255,.035)}
+html[data-theme="night"] .note{color:#9ba6b5;border-color:rgba(255,255,255,.07)}
+html[data-theme="night"] .note code{background:#1b1e26;color:#c8d0dc}
+html[data-theme="night"] .field input,
+html[data-theme="night"] .field textarea{
+  color:#f2f5fa;background:#15171d;border-color:rgba(255,255,255,.10)
+}
+html[data-theme="night"] .thumb,
+html[data-theme="night"] .player{
+  border-color:rgba(255,255,255,.08);
+  background:radial-gradient(circle at 70% 30%,rgba(111,70,255,.26),transparent 28%),linear-gradient(145deg,#171a26,#202334 58%,#151821)
+}
+html[data-theme="night"] .player-label,
+html[data-theme="night"] .video-number,
+html[data-theme="night"] .time{color:#8f97a6}
+html[data-theme="night"] .arrow{color:#8994ad}
+
 </style>
 </head>
 <body>
 <header>
-  <div class="brand" onclick="location.href='index.html'"><div class="brandmark"></div><span>Tube</span></div>
+  <div class="header-left">
+<div class="brand" onclick="location.href='index.html'"><div class="brandmark"></div><span>Tube</span></div>
+<div class="theme-switch" aria-label="Weergavemodus">
+  <button class="theme-choice" type="button" data-theme-choice="day" aria-label="Overdagmodus"><span>☀</span><span class="theme-label">Overdag</span></button>
+  <button class="theme-choice" type="button" data-theme-choice="night" aria-label="Nachtmodus"><span>☾</span><span class="theme-label">Nacht</span></button>
+</div>
+</div>
   <button class="back" id="backBtn">← Terug</button>
 </header>
 
@@ -143,6 +279,18 @@ list.innerHTML=examples.map((v,i)=>`
 function openVideo(n){
   location.href=`video.html?cat=${encodeURIComponent(catSlug)}&sub=${encodeURIComponent(sub)}&v=${n}`;
 }
+</script>
+<script>
+(function(){
+  const buttons=document.querySelectorAll('[data-theme-choice]');
+  function setTheme(theme){
+    document.documentElement.setAttribute('data-theme',theme);
+    localStorage.setItem('tube-theme',theme);
+    buttons.forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.themeChoice===theme)));
+  }
+  buttons.forEach(btn=>btn.addEventListener('click',()=>setTheme(btn.dataset.themeChoice)));
+  setTheme(document.documentElement.getAttribute('data-theme') || 'night');
+})();
 </script>
 </body>
 </html>
