@@ -203,6 +203,76 @@ html[data-theme="night"] .arrow{color:#8893ab}
   html[data-theme="night"] .search{min-height:66px}
 }
 
+
+/* OWSY portal */
+.portal-actions{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.owsy-toggle{
+  display:flex;align-items:center;gap:9px;min-height:48px;padding:0 18px;
+  border:1px solid #d6e1e5;border-radius:25px;background:rgba(255,255,255,.72);
+  color:var(--ink);font-size:14px;font-weight:650;letter-spacing:.045em;cursor:pointer;
+  box-shadow:0 10px 30px rgba(36,74,84,.06);backdrop-filter:blur(12px);
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+}
+.owsy-toggle:hover{transform:translateY(-1px);border-color:#b9ccd3;box-shadow:0 14px 34px rgba(36,74,84,.09)}
+.owsy-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:linear-gradient(135deg,#6d4bff,#2aa8ff);
+  box-shadow:0 0 14px rgba(90,100,255,.42);
+}
+html[data-theme="night"] .owsy-toggle{
+  color:#f2f5fa;background:rgba(26,28,35,.88);
+  border-color:rgba(255,255,255,.09);
+  box-shadow:0 14px 42px rgba(0,0,0,.24)
+}
+html[data-theme="night"] .owsy-toggle:hover{
+  border-color:rgba(111,116,255,.34);
+  box-shadow:0 16px 46px rgba(0,0,0,.28),0 0 28px rgba(86,87,255,.09)
+}
+.owsy-transition{
+  position:fixed;inset:0;z-index:999;display:grid;place-items:center;
+  opacity:0;visibility:hidden;pointer-events:none;
+  background:rgba(6,7,12,.30);
+  backdrop-filter:blur(0px) brightness(1);
+  -webkit-backdrop-filter:blur(0px) brightness(1);
+  transition:opacity .34s ease,visibility .34s ease,backdrop-filter .65s cubic-bezier(.2,.8,.2,1);
+}
+.owsy-transition.active{
+  opacity:1;visibility:visible;pointer-events:auto;
+  backdrop-filter:blur(18px) brightness(.36);
+  -webkit-backdrop-filter:blur(18px) brightness(.36);
+}
+.portal-stage{position:relative;width:min(430px,82vw);aspect-ratio:1;display:grid;place-items:center;transform:scale(.74);opacity:.2;transition:transform .78s cubic-bezier(.16,.9,.2,1),opacity .36s ease}
+.owsy-transition.active .portal-stage{transform:scale(1);opacity:1}
+.portal-ring{
+  position:absolute;border-radius:50%;border:1px solid rgba(181,192,255,.13);
+  background:rgba(255,255,255,.018);
+  box-shadow:inset 0 0 40px rgba(108,77,255,.025);
+  transform:scale(.55);opacity:0;
+}
+.portal-ring:nth-child(1){width:100%;height:100%;transition:transform .9s .03s ease,opacity .5s .03s ease}
+.portal-ring:nth-child(2){width:78%;height:78%;transition:transform .82s .08s ease,opacity .5s .08s ease}
+.portal-ring:nth-child(3){width:56%;height:56%;transition:transform .76s .13s ease,opacity .5s .13s ease}
+.portal-ring:nth-child(4){width:36%;height:36%;transition:transform .7s .18s ease,opacity .5s .18s ease}
+.owsy-transition.active .portal-ring{transform:scale(1);opacity:1}
+.portal-core{
+  position:relative;z-index:2;width:112px;height:112px;border-radius:50%;
+  display:grid;place-items:center;color:#fff;font-size:16px;font-weight:760;letter-spacing:.16em;
+  background:radial-gradient(circle at 35% 30%,rgba(159,137,255,.78),rgba(86,72,226,.72) 38%,rgba(20,25,43,.92) 78%);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 0 52px rgba(92,91,255,.32),0 24px 70px rgba(0,0,0,.34);
+}
+.portal-caption{
+  position:absolute;top:calc(50% + 88px);left:50%;transform:translateX(-50%);
+  color:rgba(247,249,255,.78);font-size:12px;letter-spacing:.10em;text-transform:uppercase;white-space:nowrap;
+  opacity:0;transition:opacity .45s .28s ease
+}
+.owsy-transition.active .portal-caption{opacity:1}
+@media(max-width:640px){
+  .portal-actions{gap:8px}.category-toggle,.owsy-toggle{padding:0 14px;min-height:46px}
+}
+
 </style>
 </head>
 <body>
@@ -231,15 +301,31 @@ html[data-theme="night"] .arrow{color:#8893ab}
 </section>
 
 <section class="category-area" id="categoryArea">
-  <button class="category-toggle" id="categoryToggle" type="button">
-    <span>▦</span><span>Categorieën</span><span class="chevron">⌄</span>
-  </button>
+  <div class="portal-actions">
+    <button class="category-toggle" id="categoryToggle" type="button">
+      <span>▦</span><span>Categorieën</span><span class="chevron">⌄</span>
+    </button>
+    <button class="owsy-toggle" id="owsyBtn" type="button" aria-label="Open OWSY">
+      <span class="owsy-dot"></span><span>OWSY</span>
+    </button>
+  </div>
   <div class="reveal"><div class="clip"><div class="panel">
     <div class="panel-head"><div class="panel-title">Alle categorieën</div><button class="close" id="closeCategories">×</button></div>
     <div class="list" id="categoryList"></div>
   </div></div></div>
 </section>
 </main>
+</div>
+
+<div class="owsy-transition" id="owsyTransition" aria-hidden="true">
+  <div class="portal-stage">
+    <div class="portal-ring"></div>
+    <div class="portal-ring"></div>
+    <div class="portal-ring"></div>
+    <div class="portal-ring"></div>
+    <div class="portal-core">OWSY</div>
+    <div class="portal-caption">De wereld opent</div>
+  </div>
 </div>
 
 <script src="categories.js"></script>
@@ -250,6 +336,8 @@ const closeBtn=document.getElementById('closeCategories');
 const list=document.getElementById('categoryList');
 const input=document.getElementById('searchInput');
 const suggestions=document.getElementById('suggestions');
+const owsyBtn=document.getElementById('owsyBtn');
+const owsyTransition=document.getElementById('owsyTransition');
 
 function categoryUrl(slug){return `category.html?cat=${encodeURIComponent(slug)}`}
 
@@ -296,6 +384,16 @@ input.addEventListener('input',()=>{
 });
 document.getElementById('searchForm').addEventListener('submit',e=>e.preventDefault());
 document.addEventListener('click',e=>{if(!e.target.closest('.search-stack'))suggestions.classList.remove('visible')});
+
+owsyBtn.addEventListener('click',()=>{
+  if(owsyTransition.classList.contains('active')) return;
+  area.classList.remove('open');
+  suggestions.classList.remove('visible');
+  owsyTransition.classList.add('active');
+  owsyTransition.setAttribute('aria-hidden','false');
+  sessionStorage.setItem('tube-owsy-enter','1');
+  setTimeout(()=>{ location.href='owsy.html'; },900);
+});
 </script>
 <script>
 (function(){
