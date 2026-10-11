@@ -73,6 +73,131 @@ h1 .accent{color:#3f8b83}
 .item:hover,.suggestion:hover{background:rgba(235,246,244,.68)}
 .iconwrap{background:linear-gradient(145deg,#fbfefd,#edf6f4);border-color:#cee0df;color:#477d7c}
 
+
+/* TUBE DESIGN EXPERIMENT 02 — immersive dark focus, eigen stijl */
+body{
+  background:
+    radial-gradient(circle at 78% 12%,rgba(111,70,255,.25),transparent 28%),
+    radial-gradient(circle at 18% 22%,rgba(47,112,255,.18),transparent 30%),
+    radial-gradient(circle at 50% 115%,rgba(0,174,255,.10),transparent 36%),
+    linear-gradient(180deg,#0a0b10 0%,#0d0f15 48%,#0b0d12 100%);
+  color:#f5f7fb;
+  background-attachment:fixed;
+}
+.shell{position:relative;overflow:hidden}
+.shell:before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    linear-gradient(115deg,rgba(255,255,255,.025),transparent 24%),
+    radial-gradient(circle at 50% 32%,rgba(255,255,255,.03),transparent 32%);
+}
+header{
+  background:rgba(10,11,16,.66);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.brand{color:#fff;font-weight:720}
+.brandmark{
+  background:linear-gradient(145deg,#6f46ff 0%,#4d7cff 48%,#28b8ff 100%);
+  box-shadow:0 0 28px rgba(92,91,255,.35);
+}
+.login{
+  color:#f4f6fb;
+  border:1px solid rgba(255,255,255,.12);
+  padding:10px 15px;border-radius:18px;
+  background:rgba(255,255,255,.045);
+}
+.hero{
+  min-height:560px;padding:74px 20px 86px;position:relative;
+}
+.hero:before{
+  content:"";position:absolute;width:min(760px,84vw);height:min(440px,54vw);
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 58% 44%,rgba(120,68,255,.28),transparent 40%),
+    radial-gradient(circle at 35% 58%,rgba(42,127,255,.20),transparent 44%);
+  filter:blur(34px);z-index:-1;top:9%;left:50%;transform:translateX(-50%);
+}
+h1{
+  color:#fff;
+  font-size:clamp(48px,5.4vw,78px);
+  line-height:.98;
+  letter-spacing:-.052em;
+  font-weight:760;
+  text-shadow:none;
+  margin-bottom:38px;
+}
+h1 .accent{
+  color:#fff;
+  background:linear-gradient(90deg,#ffffff 15%,#bfc8ff 48%,#8dbdff 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.search-stack{width:min(790px,92vw)}
+.search{
+  min-height:72px;
+  background:rgba(28,30,38,.92);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 24px 70px rgba(0,0,0,.34),0 0 0 1px rgba(115,100,255,.05);
+  backdrop-filter:blur(20px);
+}
+.search:focus-within{
+  border-color:rgba(110,126,255,.55);
+  box-shadow:0 26px 74px rgba(0,0,0,.38),0 0 0 4px rgba(90,100,255,.10);
+}
+.search svg{color:#8d96a8}
+.search input{color:#f6f8fc;font-size:16px}
+.search input::placeholder{color:#7f8796}
+.search button{
+  min-width:106px;
+  background:linear-gradient(135deg,#6d4bff 0%,#4e72ff 55%,#2aa8ff 100%);
+  box-shadow:0 10px 28px rgba(77,103,255,.28);
+}
+.category-area{padding-top:0}
+.category-toggle{
+  color:#f2f5fa;
+  background:rgba(26,28,35,.88);
+  border:1px solid rgba(255,255,255,.09);
+  box-shadow:0 14px 42px rgba(0,0,0,.24);
+  backdrop-filter:blur(18px);
+}
+.panel,.suggestions{
+  background:rgba(18,20,26,.96);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 26px 74px rgba(0,0,0,.35);
+  backdrop-filter:blur(20px);
+}
+.panel-head{border-bottom-color:rgba(255,255,255,.07)}
+.panel-title,.suggestion-name,.name{color:#f5f7fb}
+.close{color:#aab2c0}
+.suggestion-label{color:#777f91}
+.list{gap:10px;padding:10px 0 0}
+.item,.suggestion{
+  color:#eef2f8;
+  background:#171920;
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:15px;
+}
+.item{min-height:70px;padding:12px 12px}
+.suggestion{margin:8px 10px;width:calc(100% - 20px);border-top:1px solid rgba(255,255,255,.055)}
+.item:last-child{border-bottom:1px solid rgba(255,255,255,.055)}
+.item:hover,.suggestion:hover{
+  background:#1e2129;
+  border-color:rgba(103,122,255,.26);
+}
+.iconwrap{
+  color:#aab8ff;
+  background:linear-gradient(145deg,#202333,#171a25);
+  border-color:rgba(114,124,255,.18);
+}
+.desc,.suggestion-reason{color:#8f97a6}
+.arrow{color:#8893ab}
+@media(max-width:640px){
+  .hero{min-height:500px;padding-top:64px}
+  h1{font-size:46px}
+  .search{min-height:66px}
+}
+
 </style>
 </head>
 <body>
