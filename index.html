@@ -208,6 +208,7 @@ html[data-theme="night"] .arrow{color:#8893ab}
 .portal-actions{
   display:flex;align-items:center;justify-content:center;gap:10px;
 }
+.portal-actions .category-toggle{margin:0}
 .owsy-toggle{
   display:flex;align-items:center;gap:9px;min-height:48px;padding:0 18px;
   border:1px solid #d6e1e5;border-radius:25px;background:rgba(255,255,255,.72);
@@ -257,11 +258,14 @@ html[data-theme="night"] .owsy-toggle:hover{
 .portal-ring:nth-child(4){width:36%;height:36%;transition:transform .7s .18s ease,opacity .5s .18s ease}
 .owsy-transition.active .portal-ring{transform:scale(1);opacity:1}
 .portal-core{
-  position:relative;z-index:2;width:112px;height:112px;border-radius:50%;
-  display:grid;place-items:center;color:#fff;font-size:16px;font-weight:760;letter-spacing:.16em;
-  background:radial-gradient(circle at 35% 30%,rgba(159,137,255,.78),rgba(86,72,226,.72) 38%,rgba(20,25,43,.92) 78%);
-  border:1px solid rgba(255,255,255,.14);
-  box-shadow:0 0 52px rgba(92,91,255,.32),0 24px 70px rgba(0,0,0,.34);
+  position:relative;z-index:2;
+  display:grid;place-items:center;
+  color:rgba(214,220,255,.92);
+  font-size:clamp(30px,3vw,42px);
+  font-weight:500;
+  letter-spacing:.24em;
+  text-indent:.24em;
+  text-shadow:0 0 24px rgba(92,91,255,.34),0 0 42px rgba(42,168,255,.14);
 }
 .portal-caption{
   position:absolute;top:calc(50% + 88px);left:50%;transform:translateX(-50%);
@@ -324,7 +328,7 @@ html[data-theme="night"] .owsy-toggle:hover{
     <div class="portal-ring"></div>
     <div class="portal-ring"></div>
     <div class="portal-core">OWSY</div>
-    <div class="portal-caption">De wereld opent</div>
+    <div class="portal-caption">Other worlds surprise you</div>
   </div>
 </div>
 
