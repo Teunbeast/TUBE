@@ -17,6 +17,20 @@ h1{font-size:clamp(38px,5vw,58px);line-height:1.05;letter-spacing:-.045em;font-w
 .levels{border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 20px 46px rgba(24,56,74,.06)}
 .level{display:grid;grid-template-columns:1fr 26px;align-items:center;gap:18px;min-height:96px;padding:22px 24px;border-bottom:1px solid #edf2f4;cursor:pointer}.level:last-child{border-bottom:0}.level:hover{background:var(--soft)}
 .level-name{font-size:17px;font-weight:680;margin-bottom:6px}.level-desc{font-size:13px;line-height:1.45;color:var(--muted)}.arrow{font-size:23px;color:#7896a3}
+
+/* TUBE DESIGN EXPERIMENT 01 */
+body{
+  background:
+    radial-gradient(circle at 10% 12%,rgba(142,205,195,.18),transparent 27%),
+    radial-gradient(circle at 90% 4%,rgba(180,205,230,.20),transparent 26%),
+    linear-gradient(180deg,#f8fbfa 0%,#fffdf9 58%,#f7fafb 100%);
+  background-attachment:fixed;
+}
+header{background:rgba(248,252,251,.74);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom-color:rgba(211,226,226,.6)}
+.brandmark{background:linear-gradient(135deg,#8fd3c6,#4f8993 62%,#315e70);box-shadow:0 8px 22px rgba(79,137,147,.20)}
+.eyebrow{color:#4f8993}.levels{background:rgba(255,255,255,.9);border-color:rgba(205,221,222,.9);box-shadow:0 24px 60px rgba(35,72,82,.09);backdrop-filter:blur(14px)}
+.level:hover{background:rgba(235,246,244,.7)}.back{background:rgba(255,255,255,.76);backdrop-filter:blur(10px)}
+
 </style>
 </head>
 <body>
