@@ -244,35 +244,48 @@ html[data-theme="night"] .owsy-toggle:hover{
   backdrop-filter:blur(18px) brightness(.36);
   -webkit-backdrop-filter:blur(18px) brightness(.36);
 }
-.portal-stage{position:relative;width:min(430px,82vw);aspect-ratio:1;display:grid;place-items:center;transform:scale(.74);opacity:.2;transition:transform .78s cubic-bezier(.16,.9,.2,1),opacity .36s ease}
-.owsy-transition.active .portal-stage{transform:scale(1);opacity:1}
-.portal-ring{
-  position:absolute;border-radius:50%;border:1px solid rgba(181,192,255,.13);
-  background:rgba(255,255,255,.018);
-  box-shadow:inset 0 0 40px rgba(108,77,255,.025);
-  transform:scale(.55);opacity:0;
+.portal-stage{
+  position:relative;
+  width:min(330px,76vw);
+  aspect-ratio:1;
+  border-radius:50%;
+  border:1px solid rgba(181,192,255,.16);
+  background:radial-gradient(circle at 50% 45%,rgba(108,77,255,.055),rgba(255,255,255,.01) 58%,transparent 74%);
+  box-shadow:inset 0 0 52px rgba(108,77,255,.035),0 0 42px rgba(65,79,255,.05);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:24px;
+  transform:scale(.76);
+  opacity:.15;
+  transition:transform .78s cubic-bezier(.16,.9,.2,1),opacity .4s ease,border-color .55s ease;
 }
-.portal-ring:nth-child(1){width:100%;height:100%;transition:transform .9s .03s ease,opacity .5s .03s ease}
-.portal-ring:nth-child(2){width:78%;height:78%;transition:transform .82s .08s ease,opacity .5s .08s ease}
-.portal-ring:nth-child(3){width:56%;height:56%;transition:transform .76s .13s ease,opacity .5s .13s ease}
-.portal-ring:nth-child(4){width:36%;height:36%;transition:transform .7s .18s ease,opacity .5s .18s ease}
-.owsy-transition.active .portal-ring{transform:scale(1);opacity:1}
+.owsy-transition.active .portal-stage{
+  transform:scale(1);
+  opacity:1;
+  border-color:rgba(190,199,255,.22);
+}
 .portal-core{
-  position:relative;z-index:2;
-  display:grid;place-items:center;
   color:rgba(214,220,255,.92);
-  font-size:clamp(30px,3vw,42px);
+  font-size:clamp(32px,3.2vw,44px);
   font-weight:500;
   letter-spacing:.24em;
   text-indent:.24em;
+  line-height:1;
   text-shadow:0 0 24px rgba(92,91,255,.34),0 0 42px rgba(42,168,255,.14);
 }
 .portal-caption{
-  position:absolute;top:calc(50% + 88px);left:50%;transform:translateX(-50%);
-  color:rgba(247,249,255,.78);font-size:12px;letter-spacing:.10em;text-transform:uppercase;white-space:nowrap;
-  opacity:0;transition:opacity .45s .28s ease
+  color:rgba(247,249,255,.74);
+  font-size:12px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity .38s .16s ease,transform .5s .16s ease;
 }
-.owsy-transition.active .portal-caption{opacity:1}
+.owsy-transition.active .portal-caption{opacity:1;transform:translateY(0)}
 @media(max-width:640px){
   .portal-actions{gap:8px}.category-toggle,.owsy-toggle{padding:0 14px;min-height:46px}
 }
@@ -323,10 +336,6 @@ html[data-theme="night"] .owsy-toggle:hover{
 
 <div class="owsy-transition" id="owsyTransition" aria-hidden="true">
   <div class="portal-stage">
-    <div class="portal-ring"></div>
-    <div class="portal-ring"></div>
-    <div class="portal-ring"></div>
-    <div class="portal-ring"></div>
     <div class="portal-core">OWSY</div>
     <div class="portal-caption">Other worlds surprise you</div>
   </div>
@@ -395,7 +404,6 @@ owsyBtn.addEventListener('click',()=>{
   suggestions.classList.remove('visible');
   owsyTransition.classList.add('active');
   owsyTransition.setAttribute('aria-hidden','false');
-  sessionStorage.setItem('tube-owsy-enter','1');
   setTimeout(()=>{ location.href='owsy.html'; },900);
 });
 </script>
