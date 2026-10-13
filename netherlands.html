@@ -76,7 +76,8 @@ html[data-theme="night"] body{
   height:min(76vh,820px);
   min-width:320px;min-height:420px;
   display:grid;place-items:center;
-  animation:floatMap 7s ease-in-out infinite
+  animation:floatMap 7s ease-in-out infinite;
+  perspective:1100px
 }
 .map-wrap:before{
   content:"";position:absolute;width:68%;height:76%;border-radius:46%;
@@ -85,12 +86,27 @@ html[data-theme="night"] body{
 }
 #nlMap{
   width:100%;height:100%;display:block;overflow:visible;
-  filter:drop-shadow(0 0 18px rgba(91,94,255,.13))
+  transform:rotateX(8deg) rotateZ(-1.2deg) scale(.965);
+  transform-origin:50% 52%;
+  filter:
+    drop-shadow(0 0 18px rgba(91,94,255,.16))
+    drop-shadow(0 26px 26px rgba(0,0,0,.22));
+  transition:transform .45s cubic-bezier(.2,.8,.2,1),filter .45s ease
+}
+.map-wrap:hover #nlMap{
+  transform:rotateX(5deg) rotateZ(-.6deg) scale(.98);
+  filter:
+    drop-shadow(0 0 24px rgba(91,94,255,.20))
+    drop-shadow(0 30px 34px rgba(0,0,0,.26))
 }
 .province{
-  cursor:pointer;transition:fill .16s ease,stroke .16s ease,filter .16s ease;
+  cursor:pointer;
+  transition:fill .16s ease,stroke .16s ease,filter .16s ease,transform .18s ease;
   paint-order:stroke fill
 }
+.province-depth{pointer-events:none}
+.province-rim{pointer-events:none}
+.map-sheen{pointer-events:none}
 .province-label{
   position:fixed;z-index:30;pointer-events:none;
   padding:7px 10px;border-radius:11px;
@@ -168,18 +184,28 @@ function theme(){
 function colors(){
   return theme()==='night'
     ? {
-        fill:'rgba(55,65,108,.055)',
-        stroke:'rgba(166,177,255,.82)',
-        hover:'rgba(73,102,198,.14)',
-        hoverStroke:'rgba(124,199,255,.98)',
-        glow:'rgba(91,91,255,.22)'
+        fillTop:'rgba(76,88,145,.34)',
+        fillBottom:'rgba(34,42,78,.18)',
+        depth:'rgba(15,20,40,.72)',
+        depthStroke:'rgba(71,87,150,.42)',
+        stroke:'rgba(176,186,255,.88)',
+        rim:'rgba(214,222,255,.38)',
+        hover:'rgba(90,122,220,.42)',
+        hoverStroke:'rgba(135,208,255,.98)',
+        glow:'rgba(91,91,255,.25)',
+        sheen:'rgba(185,205,255,.10)'
       }
     : {
-        fill:'rgba(128,171,196,.045)',
-        stroke:'rgba(58,91,150,.72)',
-        hover:'rgba(92,143,190,.12)',
-        hoverStroke:'rgba(57,112,194,.95)',
-        glow:'rgba(72,111,185,.16)'
+        fillTop:'rgba(183,210,225,.48)',
+        fillBottom:'rgba(115,158,190,.16)',
+        depth:'rgba(78,104,135,.20)',
+        depthStroke:'rgba(69,103,151,.32)',
+        stroke:'rgba(58,91,150,.76)',
+        rim:'rgba(255,255,255,.70)',
+        hover:'rgba(105,157,202,.36)',
+        hoverStroke:'rgba(57,112,194,.98)',
+        glow:'rgba(72,111,185,.18)',
+        sheen:'rgba(255,255,255,.22)'
       };
 }
 
@@ -199,17 +225,46 @@ function render(){
   const path=d3.geoPath(projection);
   const c=colors();
 
+  const defs=svg.selectAll('defs').data([null]).join('defs');
+  const grad=defs.selectAll('#provinceSurface').data([null]).join('linearGradient')
+    .attr('id','provinceSurface')
+    .attr('x1','0%').attr('y1','0%').attr('x2','100%').attr('y2','100%');
+  grad.selectAll('stop').data([
+    {o:'0%',c:c.fillTop},
+    {o:'52%',c:c.fillBottom},
+    {o:'100%',c:c.fillTop}
+  ]).join('stop')
+    .attr('offset',d=>d.o)
+    .attr('stop-color',d=>d.c);
+
   const root=svg.selectAll('g.map-root')
     .data([null])
     .join('g')
     .attr('class','map-root');
 
-  root.selectAll('path.province')
+  const depth=root.selectAll('g.depth-layer').data([null]).join('g')
+    .attr('class','depth-layer')
+    .attr('transform','translate(0,8)');
+
+  depth.selectAll('path.province-depth')
+    .data(provinces.features,d=>d.properties.statnaam)
+    .join('path')
+    .attr('class','province-depth')
+    .attr('d',path)
+    .attr('fill',c.depth)
+    .attr('stroke',c.depthStroke)
+    .attr('stroke-width',1.35)
+    .attr('vector-effect','non-scaling-stroke');
+
+  const surface=root.selectAll('g.surface-layer').data([null]).join('g')
+    .attr('class','surface-layer');
+
+  surface.selectAll('path.province')
     .data(provinces.features,d=>d.properties.statnaam)
     .join('path')
     .attr('class','province')
     .attr('d',path)
-    .attr('fill',c.fill)
+    .attr('fill','url(#provinceSurface)')
     .attr('stroke',c.stroke)
     .attr('stroke-width',1.05)
     .attr('vector-effect','non-scaling-stroke')
@@ -218,8 +273,9 @@ function render(){
       d3.select(this)
         .attr('fill',c.hover)
         .attr('stroke',c.hoverStroke)
-        .attr('stroke-width',1.6)
-        .style('filter',`drop-shadow(0 0 10px ${c.glow})`);
+        .attr('stroke-width',1.55)
+        .attr('transform','translate(0,-2)')
+        .style('filter',`drop-shadow(0 0 12px ${c.glow})`);
       label.textContent=d.properties.statnaam || 'Provincie';
       label.style.opacity='1';
     })
@@ -229,12 +285,36 @@ function render(){
     })
     .on('mouseleave',function(){
       d3.select(this)
-        .attr('fill',c.fill)
+        .attr('fill','url(#provinceSurface)')
         .attr('stroke',c.stroke)
         .attr('stroke-width',1.05)
+        .attr('transform',null)
         .style('filter',`drop-shadow(0 0 6px ${c.glow})`);
       label.style.opacity='0';
     });
+
+  surface.selectAll('path.province-rim')
+    .data(provinces.features,d=>d.properties.statnaam)
+    .join('path')
+    .attr('class','province-rim')
+    .attr('d',path)
+    .attr('fill','none')
+    .attr('stroke',c.rim)
+    .attr('stroke-width',.45)
+    .attr('vector-effect','non-scaling-stroke')
+    .attr('transform','translate(0,-.7)');
+
+  const outline={type:'FeatureCollection',features:provinces.features};
+  root.selectAll('path.map-sheen')
+    .data([outline])
+    .join('path')
+    .attr('class','map-sheen')
+    .attr('d',path)
+    .attr('fill','none')
+    .attr('stroke',c.sheen)
+    .attr('stroke-width',2.2)
+    .attr('vector-effect','non-scaling-stroke')
+    .attr('transform','translate(-1.3,-1.3)');
 }
 
 function loadMap(){
