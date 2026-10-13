@@ -99,7 +99,7 @@ h1{margin:10px 0 12px;font-size:clamp(36px,4.4vw,64px);line-height:.95;letter-sp
   </aside>
 </main>
 
-<div class="attribution">Administratieve grenzen: geoBoundaries · CC BY 4.0</div>
+<div class="attribution">Administratieve grenzen: geoBoundaries · CC0 1.0</div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script>
@@ -157,9 +157,7 @@ function render(){
 }
 
 function loadMap(){
-  fetch('https://www.geoboundaries.org/api/current/gbOpen/NLD/ADM1/')
-    .then(r=>{if(!r.ok) throw new Error('metadata'); return r.json()})
-    .then(meta=>fetch(meta.simplifiedGeometryGeoJSON || meta.gjDownloadURL))
+  fetch('netherlands-provinces.geojson')
     .then(r=>{if(!r.ok) throw new Error('geojson'); return r.json()})
     .then(data=>{provinces=data;render()})
     .catch(()=>{
