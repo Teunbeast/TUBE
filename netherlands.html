@@ -89,8 +89,8 @@ html[data-theme="night"] body{
 }
 .map-wrap{
   position:relative;
-  width:min(76vw,880px);
-  height:min(82vh,860px);
+  width:min(62vw,760px);
+  height:min(86vh,900px);
   min-width:320px;min-height:420px;
   display:grid;place-items:center;
   animation:floatMap 7s ease-in-out infinite
@@ -157,7 +157,7 @@ html[data-theme="day"] .province-label{
   .topbar{height:68px;padding:0 16px}
   .identity strong{font-size:11px}
   .experience{inset:68px 0 0;padding:14px}
-  .map-wrap{width:96vw;height:80vh;min-width:0;min-height:360px}
+  .map-wrap{width:88vw;height:82vh;min-width:0;min-height:380px}
   .world-label{left:18px;top:88px}
   .world-label strong{font-size:22px}
   .world-label em{display:none}
@@ -247,7 +247,7 @@ function render(){
 
   const projection=d3.geoIdentity()
     .reflectY(true)
-    .fitExtent([[width*.10,height*.045],[width*.90,height*.955]],provinces);
+    .fitExtent([[width*.055,height*.025],[width*.945,height*.975]],provinces);
 
   const path=d3.geoPath(projection);
   const c=colors();
