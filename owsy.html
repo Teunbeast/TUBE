@@ -65,6 +65,24 @@ html[data-theme="day"] body{
   position:relative;width:min(76vw,820px);height:min(76vw,820px);max-height:76vh;
   min-width:320px;min-height:320px;
 }
+.nl-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.nl-line{stroke:rgba(92,170,255,.42);stroke-width:1;vector-effect:non-scaling-stroke}
+.nl-point{fill:rgba(104,184,255,.82);filter:drop-shadow(0 0 6px rgba(74,140,255,.6))}
+.nl-label{
+  position:absolute;z-index:8;min-width:196px;padding:10px 13px;border-radius:14px;
+  border:1px solid rgba(126,176,255,.18);background:rgba(14,18,30,.72);
+  color:#dce7ff;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  text-align:left;cursor:pointer;opacity:0;pointer-events:none;
+  transform:translate3d(0,0,0);transition:opacity .2s ease,border-color .2s ease,background .2s ease;
+  box-shadow:0 10px 28px rgba(0,0,0,.18)
+}
+.nl-label.visible{opacity:1;pointer-events:auto}
+.nl-label:hover{border-color:rgba(128,177,255,.34);background:rgba(18,23,39,.88)}
+.nl-label strong{display:block;font-size:12.5px;font-weight:620;letter-spacing:.01em}
+.nl-label span{display:block;margin-top:3px;color:rgba(194,206,232,.68);font-size:10.5px;letter-spacing:.055em;text-transform:uppercase}
+html[data-theme="day"] .nl-label{background:rgba(255,255,255,.82);color:#27445c;border-color:rgba(79,137,147,.18)}
+html[data-theme="day"] .nl-label span{color:#708995}
+
 #globe{width:100%;height:100%;display:block;cursor:grab;touch-action:none}
 #globe:active{cursor:grabbing}
 .globe-wrap:after{
@@ -105,8 +123,16 @@ html[data-theme="day"] body{
 </div>
 
 <main class="experience">
-  <div class="globe-wrap">
+  <div class="globe-wrap" id="globeWrap">
     <canvas id="globe" aria-label="Interactieve wereldbol"></canvas>
+    <svg class="nl-overlay" id="nlOverlay" aria-hidden="true">
+      <line class="nl-line" id="nlLine" x1="0" y1="0" x2="0" y2="0"></line>
+      <circle class="nl-point" id="nlPoint" cx="0" cy="0" r="2.8"></circle>
+    </svg>
+    <button class="nl-label" id="nlLabel" type="button" aria-label="Open Nederland">
+      <strong>Groep 7–8 · St. Jacobusschool</strong>
+      <span>Nederland openen →</span>
+    </button>
   </div>
 </main>
 
@@ -122,6 +148,11 @@ html[data-theme="day"] body{
 const canvas=document.getElementById('globe');
 const ctx=canvas.getContext('2d');
 const modeBtn=document.getElementById('modeBtn');
+const globeWrap=document.getElementById('globeWrap');
+const nlOverlay=document.getElementById('nlOverlay');
+const nlLine=document.getElementById('nlLine');
+const nlPoint=document.getElementById('nlPoint');
+const nlLabel=document.getElementById('nlLabel');
 
 let W=0,H=0,dpr=1;
 let dragging=false,lastX=0,lastY=0;
@@ -131,7 +162,10 @@ let zoom=1;
 let targetZoom=1;
 let lastTime=performance.now();
 let countryFeatures=[];
+let netherlandsFeature=null;
 let worldReady=false;
+let pointerStart=null;
+const netherlandsCentroid=[5.2913,52.1326];
 
 const projection=d3.geoOrthographic()
   .clipAngle(90)
@@ -227,6 +261,63 @@ function drawCountries(p){
     ctx.stroke();
   }
   ctx.restore();
+
+  if(netherlandsFeature){
+    ctx.save();
+    ctx.beginPath();
+    geoPath(netherlandsFeature);
+    ctx.fillStyle=theme()==='night'?'rgba(70,135,255,.10)':'rgba(70,120,200,.08)';
+    ctx.strokeStyle=theme()==='night'?'rgba(117,190,255,.96)':'rgba(58,103,194,.92)';
+    ctx.lineWidth=1.8;
+    ctx.shadowColor=theme()==='night'?'rgba(75,145,255,.55)':'rgba(80,120,210,.25)';
+    ctx.shadowBlur=10;
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+function updateNetherlandsAnchor(){
+  if(!worldReady || !netherlandsFeature){
+    nlLabel.classList.remove('visible');
+    nlLine.style.opacity='0';
+    nlPoint.style.opacity='0';
+    return;
+  }
+
+  const center=[-rotation[0],-rotation[1]];
+  const visible=d3.geoDistance(netherlandsCentroid,center)<Math.PI/2;
+  if(!visible){
+    nlLabel.classList.remove('visible');
+    nlLine.style.opacity='0';
+    nlPoint.style.opacity='0';
+    return;
+  }
+
+  const pos=projection(netherlandsCentroid);
+  if(!pos) return;
+
+  const [x,y]=pos;
+  const labelWidth=210;
+  const preferRight=x<W*.62;
+  const labelX=preferRight?Math.min(W-labelWidth-12,x+64):Math.max(12,x-labelWidth-64);
+  const labelY=Math.max(16,Math.min(H-68,y-48));
+
+  nlLabel.style.left=labelX+'px';
+  nlLabel.style.top=labelY+'px';
+  nlLabel.classList.add('visible');
+
+  const lineX2=preferRight?labelX:labelX+labelWidth;
+  const lineY2=labelY+25;
+  nlOverlay.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  nlLine.setAttribute('x1',x);
+  nlLine.setAttribute('y1',y);
+  nlLine.setAttribute('x2',lineX2);
+  nlLine.setAttribute('y2',lineY2);
+  nlPoint.setAttribute('cx',x);
+  nlPoint.setAttribute('cy',y);
+  nlLine.style.opacity='1';
+  nlPoint.style.opacity='1';
 }
 
 function draw(){
@@ -241,6 +332,7 @@ function draw(){
   drawSphere(p);
   drawGraticule(p);
   drawCountries(p);
+  updateNetherlandsAnchor();
 }
 
 function animate(now){
@@ -264,6 +356,7 @@ canvas.addEventListener('pointerdown',e=>{
   dragging=true;
   lastX=e.clientX;
   lastY=e.clientY;
+  pointerStart={x:e.clientX,y:e.clientY};
   canvas.setPointerCapture(e.pointerId);
 });
 
@@ -278,12 +371,32 @@ canvas.addEventListener('pointermove',e=>{
   targetRotation[1]=Math.max(-72,Math.min(72,targetRotation[1]-dy*.20));
 });
 
+function openNetherlands(){
+  location.href='netherlands.html';
+}
+
+function pointerHitsNetherlands(e){
+  if(!netherlandsFeature || !worldReady) return false;
+  const rect=canvas.getBoundingClientRect();
+  const point=[e.clientX-rect.left,e.clientY-rect.top];
+  const lonLat=projection.invert(point);
+  if(!lonLat) return false;
+  const center=[-rotation[0],-rotation[1]];
+  if(d3.geoDistance(lonLat,center)>=Math.PI/2) return false;
+  return d3.geoContains(netherlandsFeature,lonLat);
+}
+
 function endDrag(e){
+  const moved=pointerStart?Math.hypot(e.clientX-pointerStart.x,e.clientY-pointerStart.y):999;
   dragging=false;
   try{canvas.releasePointerCapture(e.pointerId)}catch(_){}
+  if(moved<6 && pointerHitsNetherlands(e)) openNetherlands();
+  pointerStart=null;
 }
 canvas.addEventListener('pointerup',endDrag);
 canvas.addEventListener('pointercancel',endDrag);
+
+nlLabel.addEventListener('click',openNetherlands);
 
 canvas.addEventListener('wheel',e=>{
   e.preventDefault();
@@ -303,6 +416,7 @@ fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
   })
   .then(world=>{
     countryFeatures=topojson.feature(world,world.objects.countries).features;
+    netherlandsFeature=countryFeatures.find(feature=>String(feature.id)==='528') || null;
     worldReady=true;
   })
   .catch(()=>{
