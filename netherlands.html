@@ -25,22 +25,23 @@ body{
   font-family:Manrope,"Avenir Next","Segoe UI",Arial,sans-serif;
   color:var(--ui);-webkit-font-smoothing:antialiased;
   background:
-    radial-gradient(circle at 75% 18%,rgba(116,78,255,.18),transparent 30%),
-    radial-gradient(circle at 24% 72%,rgba(42,162,255,.11),transparent 33%),
-    linear-gradient(180deg,#f7fbfa,#fffdf9)
+    radial-gradient(circle at 76% 15%,rgba(126,92,255,.20),transparent 32%),
+    radial-gradient(circle at 18% 76%,rgba(46,170,255,.13),transparent 35%),
+    linear-gradient(155deg,#f7fbff 0%,#f1f5ff 46%,#fbf8ff 100%)
 }
 html[data-theme="night"] body{
   background:
-    radial-gradient(circle at 76% 16%,rgba(111,70,255,.22),transparent 31%),
-    radial-gradient(circle at 24% 74%,rgba(34,133,255,.13),transparent 34%),
-    linear-gradient(180deg,#090a0f,#0d0f16 58%,#0a0c12)
+    radial-gradient(circle at 82% 12%,rgba(118,78,255,.32),transparent 34%),
+    radial-gradient(circle at 14% 72%,rgba(24,139,255,.22),transparent 39%),
+    radial-gradient(circle at 54% 48%,rgba(63,72,170,.13),transparent 42%),
+    linear-gradient(155deg,#090d1a 0%,#10152b 48%,#091321 100%)
 }
 .ambient{
   position:fixed;inset:-18%;pointer-events:none;
   background:
-    radial-gradient(circle at 50% 49%,rgba(88,86,255,.12),transparent 25%),
-    radial-gradient(circle at 50% 54%,rgba(46,168,255,.06),transparent 39%);
-  filter:blur(28px)
+    radial-gradient(circle at 50% 45%,rgba(112,96,255,.17),transparent 28%),
+    radial-gradient(circle at 44% 62%,rgba(46,168,255,.10),transparent 42%);
+  filter:blur(34px)
 }
 .topbar{
   position:fixed;top:0;left:0;right:0;z-index:20;height:82px;
@@ -49,7 +50,8 @@ html[data-theme="night"] body{
 }
 .back,.mode{
   border:1px solid var(--line);background:var(--glass);color:var(--ui);
-  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);cursor:pointer
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 10px 35px rgba(0,0,0,.08);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);cursor:pointer
 }
 .back{
   display:flex;align-items:center;gap:9px;padding:9px 14px;border-radius:22px;
@@ -211,16 +213,16 @@ function theme(){
 function colors(){
   return theme()==='night'
     ? {
-        fillTop:'rgba(72,86,145,.30)',
-        fillBottom:'rgba(42,52,94,.22)',
+        fillTop:'rgba(91,105,190,.38)',
+        fillBottom:'rgba(39,61,122,.28)',
         depth:'rgba(13,18,37,0)',
         depthStroke:'rgba(78,95,166,0)',
-        stroke:'rgba(190,199,255,.96)',
-        rim:'rgba(224,231,255,.24)',
-        hover:'rgba(90,122,220,.42)',
+        stroke:'rgba(198,211,255,.92)',
+        rim:'rgba(230,236,255,.30)',
+        hover:'rgba(104,139,235,.50)',
         hoverStroke:'rgba(135,208,255,.98)',
-        glow:'rgba(91,91,255,.08)',
-        sheen:'rgba(185,205,255,.035)'
+        glow:'rgba(98,115,255,.16)',
+        sheen:'rgba(192,214,255,.07)'
       }
     : {
         fillTop:'rgba(183,210,225,.48)',
