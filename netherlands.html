@@ -70,6 +70,23 @@ html[data-theme="night"] body{
   position:fixed;inset:82px 0 0;display:grid;place-items:center;
   padding:22px
 }
+.world-label{
+  position:fixed;left:clamp(24px,5vw,72px);top:118px;z-index:10;
+  pointer-events:none
+}
+.world-label span{
+  display:block;color:var(--muted);font-size:10px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase
+}
+.world-label strong{
+  display:block;margin-top:7px;color:var(--ui);
+  font-size:clamp(22px,2.2vw,34px);font-weight:620;
+  letter-spacing:-.035em
+}
+.world-label em{
+  display:block;margin-top:7px;color:var(--muted);
+  font-size:12px;font-style:normal
+}
 .map-wrap{
   position:relative;
   width:min(76vw,880px);
@@ -79,9 +96,17 @@ html[data-theme="night"] body{
   animation:floatMap 7s ease-in-out infinite
 }
 .map-wrap:before{
-  content:"";position:absolute;width:68%;height:76%;border-radius:46%;
-  background:radial-gradient(circle,rgba(95,91,255,.072),transparent 69%);
-  filter:blur(30px);pointer-events:none
+  content:"";position:absolute;width:70%;height:78%;border-radius:46%;
+  background:
+    radial-gradient(circle at 50% 48%,rgba(95,91,255,.075),transparent 61%),
+    radial-gradient(circle at 50% 72%,rgba(28,117,255,.045),transparent 52%);
+  filter:blur(28px);pointer-events:none
+}
+.map-wrap:after{
+  content:"";position:absolute;left:17%;right:17%;bottom:7%;
+  height:9%;border-radius:50%;
+  background:rgba(0,0,0,.20);filter:blur(24px);
+  transform:scaleX(.82);pointer-events:none;opacity:.62
 }
 #nlMap{
   width:100%;height:100%;display:block;overflow:visible;
@@ -90,7 +115,11 @@ html[data-theme="night"] body{
 }
 .province{
   cursor:pointer;
-  transition:fill .16s ease,stroke .16s ease,filter .16s ease,transform .18s ease;
+  transform-box:fill-box;transform-origin:center;
+  transition:fill .24s cubic-bezier(.2,.8,.2,1),
+             stroke .24s ease,
+             filter .24s ease,
+             transform .24s cubic-bezier(.2,.8,.2,1);
   paint-order:stroke fill
 }
 .province-depth{pointer-events:none}
@@ -129,6 +158,9 @@ html[data-theme="day"] .province-label{
   .identity strong{font-size:11px}
   .experience{inset:68px 0 0;padding:14px}
   .map-wrap{width:96vw;height:80vh;min-width:0;min-height:360px}
+  .world-label{left:18px;top:88px}
+  .world-label strong{font-size:22px}
+  .world-label em{display:none}
   .hint{bottom:18px}
 }
 @media(prefers-reduced-motion:reduce){
@@ -146,6 +178,12 @@ html[data-theme="day"] .province-label{
     <span>Groep 7–8 · St. Jacobusschool</span>
   </div>
   <button class="mode" id="modeBtn" type="button" aria-label="Wissel dag- en nachtmodus">◐</button>
+</div>
+
+<div class="world-label">
+  <span>OWSY · Nederland</span>
+  <strong>Kies je gebied.</strong>
+  <em>Ontdek straks per provincie wat er te leren valt.</em>
 </div>
 
 <main class="experience">
@@ -262,9 +300,9 @@ function render(){
       d3.select(this)
         .attr('fill',c.hover)
         .attr('stroke',c.hoverStroke)
-        .attr('stroke-width',1.85)
-        .attr('transform',null)
-        .style('filter',`drop-shadow(0 0 4px ${c.glow})`);
+        .attr('stroke-width',1.95)
+        .attr('transform','scale(1.018)')
+        .style('filter',`drop-shadow(0 0 8px ${c.glow})`);
       label.textContent=d.properties.statnaam || 'Provincie';
       label.style.opacity='1';
     })
@@ -276,9 +314,9 @@ function render(){
       d3.select(this)
         .attr('fill','url(#provinceSurface)')
         .attr('stroke',c.stroke)
-        .attr('stroke-width',.7)
-        .attr('transform',null)
-        .style('filter',`drop-shadow(0 0 4px ${c.glow})`);
+        .attr('stroke-width',1.55)
+        .attr('transform','scale(1)')
+        .style('filter',`drop-shadow(0 0 2px ${c.glow})`);
       label.style.opacity='0';
     });
 
