@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nederland — OWSY</title>
+<script>
+(function(){
+  const saved=localStorage.getItem('tube-theme') || 'night';
+  document.documentElement.setAttribute('data-theme',saved);
+})();
+</script>
+<style>
+:root{
+  --ui:#18384a;--muted:#708995;--glass:rgba(255,255,255,.72);
+  --line:rgba(38,79,90,.12);--panel:rgba(255,255,255,.62);
+}
+html[data-theme="night"]{
+  --ui:#f5f7fb;--muted:#8f97a6;--glass:rgba(14,16,23,.62);
+  --line:rgba(255,255,255,.09);--panel:rgba(14,17,25,.58);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  font-family:Manrope,"Avenir Next","Segoe UI",Arial,sans-serif;color:var(--ui);
+  background:
+    radial-gradient(circle at 70% 20%,rgba(91,73,255,.17),transparent 28%),
+    radial-gradient(circle at 28% 65%,rgba(37,148,255,.10),transparent 34%),
+    linear-gradient(180deg,#f7fbfa,#fffdf9);
+  -webkit-font-smoothing:antialiased
+}
+html[data-theme="night"] body{
+  background:
+    radial-gradient(circle at 74% 16%,rgba(111,70,255,.20),transparent 30%),
+    radial-gradient(circle at 24% 72%,rgba(31,120,255,.12),transparent 32%),
+    linear-gradient(180deg,#090a0f,#0d0f16 56%,#0a0c12)
+}
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:20;height:82px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,58px)
+}
+.back,.mode{
+  border:1px solid var(--line);background:var(--glass);color:var(--ui);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);cursor:pointer
+}
+.back{display:flex;align-items:center;gap:9px;padding:9px 14px;border-radius:22px;font:inherit;font-size:13px;font-weight:650}
+.mode{width:40px;height:40px;border-radius:50%;font-size:16px}
+.identity{position:absolute;left:50%;transform:translateX(-50%);text-align:center}
+.identity strong{display:block;font-size:13px;font-weight:690;letter-spacing:.16em}
+.identity span{display:block;margin-top:3px;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+.stage{position:fixed;inset:82px 0 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,320px);gap:28px;padding:22px clamp(22px,5vw,70px) 38px}
+.map-panel{position:relative;min-width:0;border:1px solid var(--line);border-radius:30px;background:var(--panel);backdrop-filter:blur(16px);overflow:hidden}
+#nlMap{width:100%;height:100%;display:block}
+.map-glow{position:absolute;inset:12%;pointer-events:none;border-radius:36px;box-shadow:0 0 70px rgba(83,93,255,.10)}
+.province-label{
+  position:absolute;z-index:5;pointer-events:none;padding:6px 9px;border-radius:10px;
+  background:rgba(11,15,25,.76);color:#eef4ff;border:1px solid rgba(152,180,255,.16);
+  font-size:11px;opacity:0;transition:opacity .12s ease;white-space:nowrap
+}
+html[data-theme="day"] .province-label{background:rgba(255,255,255,.92);color:#24425a}
+.side{display:flex;flex-direction:column;justify-content:center;padding:12px 0}
+.kicker{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8291b5}
+h1{margin:10px 0 12px;font-size:clamp(36px,4.4vw,64px);line-height:.95;letter-spacing:-.05em;font-weight:680}
+.side p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.status{margin-top:22px;padding:15px 16px;border:1px solid var(--line);border-radius:18px;background:var(--glass);font-size:12px;color:var(--muted)}
+.status strong{display:block;color:var(--ui);font-size:13px;margin-bottom:4px}
+.legend{margin-top:14px;font-size:11px;color:var(--muted)}
+.attribution{position:fixed;right:18px;bottom:12px;color:var(--muted);font-size:9px;opacity:.62}
+@media(max-width:800px){
+  .topbar{height:68px;padding:0 16px}.identity strong{font-size:11px}
+  .stage{inset:68px 0 0;grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;padding:10px 14px 22px;gap:12px}
+  .side{padding:0 8px 4px}.side p,.status{display:none}h1{font-size:30px;margin:6px 0}.map-panel{border-radius:22px}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <button class="back" type="button" onclick="location.href='owsy.html'"><span>←</span><span>Wereldbol</span></button>
+  <div class="identity"><strong>NEDERLAND</strong><span>Groep 7–8 · St. Jacobusschool</span></div>
+  <button class="mode" id="modeBtn" type="button" aria-label="Wissel dag- en nachtmodus">◐</button>
+</div>
+
+<main class="stage">
+  <section class="map-panel" id="mapPanel">
+    <svg id="nlMap" aria-label="Kaart van Nederland met provincies"></svg>
+    <div class="map-glow"></div>
+    <div class="province-label" id="provinceLabel"></div>
+  </section>
+
+  <aside class="side">
+    <div class="kicker">OWSY · Nederland</div>
+    <h1>Jouw leerwereld.</h1>
+    <p>De provincies vormen straks de gebieden waarin de leeronderdelen van groep 7–8 worden opgebouwd. De exacte inhoud vullen we in nadat de schoolstof is afgestemd.</p>
+    <div class="status">
+      <strong>Nederland is geopend</strong>
+      De provincies zijn zichtbaar. De locatiepin van de St. Jacobusschool voegen we toe zodra jij de locatie doorgeeft.
+    </div>
+    <div class="legend">Beweeg over een provincie om de naam te zien.</div>
+  </aside>
+</main>
+
+<div class="attribution">Administratieve grenzen: geoBoundaries · CC BY 4.0</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script>
+const svg=d3.select('#nlMap');
+const panel=document.getElementById('mapPanel');
+const label=document.getElementById('provinceLabel');
+const modeBtn=document.getElementById('modeBtn');
+let provinces=null;
+
+function theme(){return document.documentElement.getAttribute('data-theme') || 'night'}
+
+function colors(){
+  return theme()==='night'
+    ? {fill:'rgba(66,77,132,.22)',stroke:'rgba(155,170,255,.72)',hover:'rgba(79,118,223,.34)',glow:'rgba(85,91,255,.28)'}
+    : {fill:'rgba(137,180,202,.18)',stroke:'rgba(57,91,148,.68)',hover:'rgba(95,145,188,.28)',glow:'rgba(65,110,180,.18)'};
+}
+
+function render(){
+  if(!provinces) return;
+  const rect=panel.getBoundingClientRect();
+  const width=rect.width,height=rect.height;
+  svg.attr('viewBox',`0 0 ${width} ${height}`);
+
+  const projection=d3.geoMercator().fitExtent([[55,38],[width-55,height-38]],provinces);
+  const path=d3.geoPath(projection);
+  const c=colors();
+
+  const g=svg.selectAll('g.map-root').data([null]).join('g').attr('class','map-root');
+
+  g.selectAll('path.province')
+    .data(provinces.features,d=>d.properties.shapeName || d.properties.NAME_1 || d.properties.name)
+    .join('path')
+    .attr('class','province')
+    .attr('d',path)
+    .attr('fill',c.fill)
+    .attr('stroke',c.stroke)
+    .attr('stroke-width',1.15)
+    .attr('vector-effect','non-scaling-stroke')
+    .style('filter',`drop-shadow(0 0 7px ${c.glow})`)
+    .on('mouseenter',function(event,d){
+      d3.select(this).attr('fill',c.hover).attr('stroke-width',1.7);
+      const name=d.properties.shapeName || d.properties.NAME_1 || d.properties.name || 'Provincie';
+      label.textContent=name;
+      label.style.opacity='1';
+    })
+    .on('mousemove',function(event){
+      const r=panel.getBoundingClientRect();
+      label.style.left=(event.clientX-r.left+12)+'px';
+      label.style.top=(event.clientY-r.top-10)+'px';
+    })
+    .on('mouseleave',function(){
+      d3.select(this).attr('fill',c.fill).attr('stroke-width',1.15);
+      label.style.opacity='0';
+    });
+}
+
+function loadMap(){
+  fetch('https://www.geoboundaries.org/api/current/gbOpen/NLD/ADM1/')
+    .then(r=>{if(!r.ok) throw new Error('metadata'); return r.json()})
+    .then(meta=>fetch(meta.simplifiedGeometryGeoJSON || meta.gjDownloadURL))
+    .then(r=>{if(!r.ok) throw new Error('geojson'); return r.json()})
+    .then(data=>{provinces=data;render()})
+    .catch(()=>{
+      document.querySelector('.status').innerHTML='<strong>Kaart kon niet laden</strong>Ververs de pagina om het opnieuw te proberen.';
+    });
+}
+
+window.addEventListener('resize',render);
+modeBtn.addEventListener('click',()=>{
+  const next=theme()==='night'?'day':'night';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('tube-theme',next);
+  render();
+});
+
+loadMap();
+</script>
+</body>
+</html>
