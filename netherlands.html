@@ -157,7 +157,7 @@ html[data-theme="day"] .province-label{
   .topbar{height:68px;padding:0 16px}
   .identity strong{font-size:11px}
   .experience{inset:68px 0 0;padding:14px}
-  .map-wrap{width:100vw;height:96vh;min-width:0;min-height:520px}
+  .map-wrap{width:92vw;height:72vh;min-width:0;min-height:500px;max-height:720px}
   .world-label{left:18px;top:88px}
   .world-label strong{font-size:22px}
   .world-label em{display:none}
@@ -250,7 +250,7 @@ function render(){
     .reflectY(true)
     .fitExtent(
       mobile
-        ? [[width*.012,height*.01],[width*.988,height*.99]]
+        ? [[width*.06,height*.035],[width*.94,height*.965]]
         : [[width*.055,height*.025],[width*.945,height*.975]],
       provinces
     );
