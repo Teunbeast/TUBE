@@ -31,17 +31,27 @@ body{
 }
 html[data-theme="night"] body{
   background:
-    radial-gradient(circle at 82% 12%,rgba(118,78,255,.32),transparent 34%),
-    radial-gradient(circle at 14% 72%,rgba(24,139,255,.22),transparent 39%),
-    radial-gradient(circle at 54% 48%,rgba(63,72,170,.13),transparent 42%),
-    linear-gradient(155deg,#090d1a 0%,#10152b 48%,#091321 100%)
+    radial-gradient(circle at 84% 10%,rgba(124,92,255,.26),transparent 31%),
+    radial-gradient(circle at 12% 70%,rgba(62,181,255,.18),transparent 36%),
+    linear-gradient(155deg,#10152d 0%,#182c4a 38%,#2b4b69 70%,#466b7d 100%)
 }
 .ambient{
   position:fixed;inset:-18%;pointer-events:none;
   background:
-    radial-gradient(circle at 50% 45%,rgba(112,96,255,.17),transparent 28%),
-    radial-gradient(circle at 44% 62%,rgba(46,168,255,.10),transparent 42%);
-  filter:blur(34px)
+    radial-gradient(circle at 54% 42%,rgba(178,197,255,.14),transparent 24%),
+    radial-gradient(circle at 44% 62%,rgba(79,194,255,.10),transparent 38%);
+  filter:blur(42px)
+}
+.terrain-grid{
+  position:fixed;inset:0;pointer-events:none;opacity:.23;
+  background:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:54px 54px;
+  mask-image:linear-gradient(to bottom,transparent 5%,rgba(0,0,0,.75) 35%,transparent 88%);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 5%,rgba(0,0,0,.75) 35%,transparent 88%);
+  transform:perspective(900px) rotateX(63deg) translateY(31%);
+  transform-origin:50% 70%
 }
 .topbar{
   position:fixed;top:0;left:0;right:0;z-index:20;height:82px;
@@ -91,29 +101,45 @@ html[data-theme="night"] body{
 }
 .map-wrap{
   position:relative;
-  width:min(62vw,760px);
-  height:min(86vh,900px);
-  min-width:320px;min-height:420px;
+  width:min(72vw,860px);
+  height:min(84vh,900px);
+  min-width:360px;min-height:500px;
   display:grid;place-items:center;
-  animation:floatMap 7s ease-in-out infinite
+  perspective:1200px;
+  animation:floatMap 8s ease-in-out infinite
 }
 .map-wrap:before{
-  content:"";position:absolute;width:70%;height:78%;border-radius:46%;
+  content:"";position:absolute;width:78%;height:83%;border-radius:48%;
   background:
-    radial-gradient(circle at 50% 48%,rgba(95,91,255,.075),transparent 61%),
-    radial-gradient(circle at 50% 72%,rgba(28,117,255,.045),transparent 52%);
-  filter:blur(28px);pointer-events:none
+    radial-gradient(circle at 50% 45%,rgba(202,216,255,.13),transparent 54%),
+    radial-gradient(circle at 48% 72%,rgba(61,170,255,.09),transparent 62%);
+  filter:blur(35px);pointer-events:none
 }
 .map-wrap:after{
-  content:"";position:absolute;left:17%;right:17%;bottom:7%;
-  height:9%;border-radius:50%;
-  background:rgba(0,0,0,.20);filter:blur(24px);
-  transform:scaleX(.82);pointer-events:none;opacity:.62
+  content:"";position:absolute;left:13%;right:13%;bottom:5%;
+  height:12%;border-radius:50%;
+  background:rgba(5,14,32,.28);filter:blur(26px);
+  transform:scaleX(.86);pointer-events:none;opacity:.7
 }
 #nlMap{
-  width:100%;height:100%;display:block;overflow:visible;
-  filter:drop-shadow(0 12px 18px rgba(0,0,0,.16));
+  width:100%;height:100%;display:block;overflow:hidden;
+  border-radius:34px;
+  filter:drop-shadow(0 24px 30px rgba(7,18,43,.18));
   transition:filter .3s ease
+}
+.neighbor-shadow,.neighbor-land{pointer-events:none}
+.neighbor-shadow{fill:rgba(5,13,30,.16);filter:blur(5px)}
+.neighbor-land{
+  fill:rgba(220,233,255,.075);
+  stroke:rgba(232,241,255,.13);
+  stroke-width:1.15;
+  vector-effect:non-scaling-stroke;
+  filter:blur(.18px)
+}
+html[data-theme="day"] .neighbor-shadow{fill:rgba(54,90,124,.10)}
+html[data-theme="day"] .neighbor-land{
+  fill:rgba(91,133,167,.075);
+  stroke:rgba(68,105,142,.15)
 }
 .province{
   cursor:pointer;
@@ -159,7 +185,7 @@ html[data-theme="day"] .province-label{
   .topbar{height:68px;padding:0 16px}
   .identity strong{font-size:11px}
   .experience{inset:68px 0 0;padding:14px}
-  .map-wrap{width:96vw;height:76vh;min-width:0;min-height:540px;max-height:760px}
+  .map-wrap{width:100vw;height:78vh;min-width:0;min-height:560px;max-height:780px}
   .world-label{left:18px;top:88px}
   .world-label strong{font-size:22px}
   .world-label em{display:none}
@@ -172,6 +198,7 @@ html[data-theme="day"] .province-label{
 </head>
 <body>
 <div class="ambient"></div>
+<div class="terrain-grid"></div>
 
 <div class="topbar">
   <button class="back" type="button" onclick="location.href='owsy.html'"><span>←</span><span>Wereldbol</span></button>
@@ -199,12 +226,14 @@ html[data-theme="day"] .province-label{
 <div class="attribution">Kaartdata: CBS/PDOK via cartomap.nl</div>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <script>
 const svg=d3.select('#nlMap');
 const wrap=document.getElementById('mapWrap');
 const label=document.getElementById('provinceLabel');
 const modeBtn=document.getElementById('modeBtn');
 let provinces=null;
+let neighbors=[];
 
 function theme(){
   return document.documentElement.getAttribute('data-theme') || 'night';
@@ -213,16 +242,16 @@ function theme(){
 function colors(){
   return theme()==='night'
     ? {
-        fillTop:'rgba(91,105,190,.38)',
-        fillBottom:'rgba(39,61,122,.28)',
-        depth:'rgba(13,18,37,0)',
-        depthStroke:'rgba(78,95,166,0)',
-        stroke:'rgba(198,211,255,.92)',
-        rim:'rgba(230,236,255,.30)',
-        hover:'rgba(104,139,235,.50)',
-        hoverStroke:'rgba(135,208,255,.98)',
-        glow:'rgba(98,115,255,.16)',
-        sheen:'rgba(192,214,255,.07)'
+        fillTop:'rgba(111,135,218,.62)',
+        fillBottom:'rgba(45,80,145,.48)',
+        depth:'rgba(18,35,69,.22)',
+        depthStroke:'rgba(137,169,225,.18)',
+        stroke:'rgba(218,229,255,.91)',
+        rim:'rgba(245,249,255,.34)',
+        hover:'rgba(129,166,239,.72)',
+        hoverStroke:'rgba(165,225,255,.98)',
+        glow:'rgba(94,139,255,.28)',
+        sheen:'rgba(226,239,255,.12)'
       }
     : {
         fillTop:'rgba(183,210,225,.48)',
@@ -248,12 +277,11 @@ function render(){
   svg.attr('viewBox',`0 0 ${width} ${height}`);
 
   const mobile=window.matchMedia('(max-width:800px)').matches;
-  const projection=d3.geoIdentity()
-    .reflectY(true)
+  const projection=d3.geoMercator()
     .fitExtent(
       mobile
-        ? [[width*.015,height*.02],[width*.985,height*.98]]
-        : [[width*.055,height*.025],[width*.945,height*.975]],
+        ? [[width*.08,height*.055],[width*.92,height*.955]]
+        : [[width*.15,height*.045],[width*.85,height*.955]],
       provinces
     );
 
@@ -277,9 +305,26 @@ function render(){
     .join('g')
     .attr('class','map-root');
 
+  const neighborRoot=root.selectAll('g.neighbor-layer')
+    .data([null]).join('g')
+    .attr('class','neighbor-layer');
+
+  neighborRoot.selectAll('path.neighbor-shadow')
+    .data(neighbors,d=>d.id)
+    .join('path')
+    .attr('class','neighbor-shadow')
+    .attr('d',path)
+    .attr('transform','translate(0,10)');
+
+  neighborRoot.selectAll('path.neighbor-land')
+    .data(neighbors,d=>d.id)
+    .join('path')
+    .attr('class','neighbor-land')
+    .attr('d',path);
+
   const depth=root.selectAll('g.depth-layer').data([null]).join('g')
     .attr('class','depth-layer')
-    .attr('transform','translate(0,0)');
+    .attr('transform','translate(0,7)');
 
   depth.selectAll('path.province-depth')
     .data(provinces.features,d=>d.properties.statnaam)
@@ -288,7 +333,7 @@ function render(){
     .attr('d',path)
     .attr('fill',c.depth)
     .attr('stroke',c.depthStroke)
-    .attr('stroke-width',0)
+    .attr('stroke-width',.8)
     .attr('vector-effect','non-scaling-stroke');
 
   const surface=root.selectAll('g.surface-layer').data([null]).join('g')
@@ -353,15 +398,28 @@ function render(){
 }
 
 function loadMap(){
-  fetch('netherlands-provinces.geojson')
-    .then(r=>{
+  Promise.all([
+    fetch('netherlands-provinces.geojson').then(r=>{
       if(!r.ok) throw new Error('geojson');
       return r.json();
+    }),
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r=>{
+      if(!r.ok) throw new Error('world');
+      return r.json();
     })
-    .then(data=>{
-      provinces=data;
-      render();
+  ]).then(([data,world])=>{
+    provinces=data;
+    const countries=topojson.feature(world,world.objects.countries).features;
+    neighbors=countries.filter(d=>{
+      const id=String(d.id).padStart(3,'0');
+      return id==='056' || id==='276';
     });
+    render();
+  }).catch(()=>{
+    fetch('netherlands-provinces.geojson')
+      .then(r=>r.json())
+      .then(data=>{provinces=data;neighbors=[];render();});
+  });
 }
 
 window.addEventListener('resize',render);
