@@ -123,15 +123,14 @@ html[data-theme="night"] body{
 }
 #nlMap{
   width:100%;height:100%;display:block;overflow:hidden;
-  border-radius:34px;
   filter:drop-shadow(0 24px 30px rgba(7,18,43,.18));
   transition:filter .3s ease
 }
 .neighbor-shadow,.neighbor-land{pointer-events:none}
-.neighbor-shadow{fill:rgba(5,13,30,.16);filter:blur(5px)}
+.neighbor-shadow{fill:rgba(5,13,30,.10);filter:blur(7px)}
 .neighbor-land{
-  fill:rgba(220,233,255,.075);
-  stroke:rgba(232,241,255,.13);
+  fill:rgba(220,233,255,.045);
+  stroke:rgba(232,241,255,.10);
   stroke-width:1.15;
   vector-effect:non-scaling-stroke;
   filter:blur(.18px)
@@ -277,12 +276,33 @@ function render(){
   svg.attr('viewBox',`0 0 ${width} ${height}`);
 
   const mobile=window.matchMedia('(max-width:800px)').matches;
-  const projection=d3.geoMercator()
+
+  // The source is WGS84 lon/lat, but its polygon winding is intended for planar cartography.
+  // Convert lon/lat to a local planar coordinate system first, then fit it cleanly.
+  const lat0=52.15*Math.PI/180;
+  const flattenCoords=coords=>{
+    if(typeof coords[0]==='number'){
+      return [coords[0]*Math.cos(lat0),coords[1]];
+    }
+    return coords.map(flattenCoords);
+  };
+  const flattenFeature=f=>({
+    ...f,
+    geometry:{...f.geometry,coordinates:flattenCoords(f.geometry.coordinates)}
+  });
+  const flatProvinces={
+    type:'FeatureCollection',
+    features:provinces.features.map(flattenFeature)
+  };
+  const flatNeighbors=neighbors.map(flattenFeature);
+
+  const projection=d3.geoIdentity()
+    .reflectY(true)
     .fitExtent(
       mobile
-        ? [[width*.08,height*.055],[width*.92,height*.955]]
-        : [[width*.15,height*.045],[width*.85,height*.955]],
-      provinces
+        ? [[width*.055,height*.04],[width*.945,height*.96]]
+        : [[width*.13,height*.035],[width*.87,height*.965]],
+      flatProvinces
     );
 
   const path=d3.geoPath(projection);
@@ -310,14 +330,14 @@ function render(){
     .attr('class','neighbor-layer');
 
   neighborRoot.selectAll('path.neighbor-shadow')
-    .data(neighbors,d=>d.id)
+    .data(flatNeighbors,d=>d.id)
     .join('path')
     .attr('class','neighbor-shadow')
     .attr('d',path)
     .attr('transform','translate(0,10)');
 
   neighborRoot.selectAll('path.neighbor-land')
-    .data(neighbors,d=>d.id)
+    .data(flatNeighbors,d=>d.id)
     .join('path')
     .attr('class','neighbor-land')
     .attr('d',path);
@@ -327,7 +347,7 @@ function render(){
     .attr('transform','translate(0,7)');
 
   depth.selectAll('path.province-depth')
-    .data(provinces.features,d=>d.properties.statnaam)
+    .data(flatProvinces.features,d=>d.properties.statnaam)
     .join('path')
     .attr('class','province-depth')
     .attr('d',path)
@@ -340,7 +360,7 @@ function render(){
     .attr('class','surface-layer');
 
   surface.selectAll('path.province')
-    .data(provinces.features,d=>d.properties.statnaam)
+    .data(flatProvinces.features,d=>d.properties.statnaam)
     .join('path')
     .attr('class','province')
     .attr('d',path)
@@ -374,7 +394,7 @@ function render(){
     });
 
   surface.selectAll('path.province-rim')
-    .data(provinces.features,d=>d.properties.statnaam)
+    .data(flatProvinces.features,d=>d.properties.statnaam)
     .join('path')
     .attr('class','province-rim')
     .attr('d',path)
@@ -384,7 +404,7 @@ function render(){
     .attr('vector-effect','non-scaling-stroke')
     .attr('transform',null);
 
-  const outline={type:'FeatureCollection',features:provinces.features};
+  const outline={type:'FeatureCollection',features:flatProvinces.features};
   root.selectAll('path.map-sheen')
     .data([outline])
     .join('path')
